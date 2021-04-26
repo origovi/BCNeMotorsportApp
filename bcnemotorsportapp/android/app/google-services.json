@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "413033097979",
+    "firebase_url": "https://bcnemotorsportapplication-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "bcnemotorsportapplication",
+    "storage_bucket": "bcnemotorsportapplication.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:413033097979:android:de8d3597dc6ce77e49de5e",
+        "android_client_info": {
+          "package_name": "edu.upc.bcnemotorsport.bcnemotorsportapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "413033097979-pu0j8hrmsg3jkaaaqscl57a2ffe6al5p.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "edu.upc.bcnemotorsport.bcnemotorsportapp",
+            "certificate_hash": "d8610a49e21d6d03bc6acf55faa2bf1a6a0d476c"
+          }
+        },
+        {
+          "client_id": "413033097979-9f7o5no0j8e1umjio2lrvgg6u5j5fqmm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDVSFmHVKqjg1CLXigBidOjlgXN_8XkmTE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "413033097979-9f7o5no0j8e1umjio2lrvgg6u5j5fqmm.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
