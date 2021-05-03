@@ -1,6 +1,6 @@
 import 'package:bcnemotorsportapp/Constants.dart';
-import 'package:bcnemotorsportapp/models/ToDoData.dart';
-import 'package:bcnemotorsportapp/widgets/ToDo.dart';
+import 'package:bcnemotorsportapp/models/toDo/ToDoData.dart';
+import 'package:bcnemotorsportapp/widgets/toDo/ToDo.dart';
 import 'package:flutter/material.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 

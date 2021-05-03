@@ -1,11 +1,11 @@
 import 'package:bcnemotorsportapp/Constants.dart';
+import 'package:bcnemotorsportapp/models/team/Section.dart';
 import 'package:flutter/material.dart';
 
 class SectionCard extends StatelessWidget {
-  final String title;
-  final String about;
+  final Section data;
 
-  SectionCard(this.title, this.about);
+  SectionCard(this.data);
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +22,7 @@ class SectionCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                title,
+                data.name,
                 textAlign: TextAlign.left,
                 style: TextStyle(fontSize: 20, color: Colors.white),
                 overflow: TextOverflow.ellipsis,
@@ -30,7 +30,7 @@ class SectionCard extends StatelessWidget {
               ),
               SizedBox(height: 15),
               Text(
-                about,
+                data.about,
                 style: TextStyle(color: Colors.grey[350]),
                 overflow: TextOverflow.ellipsis,
                 maxLines: 6,
@@ -38,7 +38,7 @@ class SectionCard extends StatelessWidget {
             ],
           ),
         ),
-        onTap: () {},
+        onTap: () => Navigator.of(context).pushNamed('/section', arguments: data),
       ),
     );
   }

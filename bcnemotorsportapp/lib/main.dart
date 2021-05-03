@@ -1,4 +1,5 @@
 import 'package:bcnemotorsportapp/Constants.dart';
+import 'package:bcnemotorsportapp/providers/CloudDataProvider.dart';
 import 'package:bcnemotorsportapp/providers/SignInPovider.dart';
 import 'package:bcnemotorsportapp/routeGenerator.dart';
 import 'package:bcnemotorsportapp/screens/ScreenWithLogo.dart';
@@ -28,6 +29,9 @@ class MyApp extends StatelessWidget {
               providers: [
                 ChangeNotifierProvider<SignInProvider>(
                   create: (context) => SignInProvider(context),
+                ),
+                ChangeNotifierProvider<CloudDataProvider>(
+                  create: (context) => CloudDataProvider(context),
                 ),
               ],
               child: MaterialApp(

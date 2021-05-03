@@ -30,11 +30,8 @@ class PageLoginOrHomeDecisor extends StatelessWidget {
               if (dataSnapshot.hasError)
                 return PageError(dataSnapshot.error.toString());
               else if (dataSnapshot.hasData) {
-                return ChangeNotifierProvider<CloudDataProvider>(
-                  create: (context) =>
-                      CloudDataProvider(context, data: dataSnapshot.data, user: userSnapshot.data),
-                  child: ScreenHome(),
-                );
+                Provider.of<CloudDataProvider>(context, listen: false).init(data: dataSnapshot.data, user: userSnapshot.data, dbUId: signInProvider.dbUId);
+                return ScreenHome();
               } else
                 return ScreenLogin(loading: true);
             },

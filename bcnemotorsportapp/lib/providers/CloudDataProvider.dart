@@ -1,32 +1,41 @@
 import 'package:bcnemotorsportapp/models/AllData.dart';
 import 'package:bcnemotorsportapp/models/CalendarData.dart';
-import 'package:bcnemotorsportapp/models/TeamData.dart';
-import 'package:bcnemotorsportapp/models/ToDoData.dart';
+import 'package:bcnemotorsportapp/models/team/Person.dart';
+import 'package:bcnemotorsportapp/models/team/SectionsData.dart';
+import 'package:bcnemotorsportapp/models/toDo/ToDoData.dart';
 import 'package:bcnemotorsportapp/services/DatabaseService.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class CloudDataProvider extends ChangeNotifier {
-  final BuildContext context;
-  final User user;
-  AllData data;
+  final BuildContext _context;
+  AllData _data;
+  User _user;
+  String _dbUId;
 
-  List<Map<String, dynamic>> _sectionData;
+  CloudDataProvider(this._context);
 
-  CloudDataProvider(context, {@required data, @required user})
-      : this.context = context,
-        this.user = user {
-    this._sectionData = [];
-    this.data = data;
+  void init({@required data, @required user, @required dbUId}) {
+    this._data = data;
+    this._user = user;
+    this._dbUId = dbUId;
   }
 
   // GETTERS
-  get sectionData => _sectionData;
+  SectionsData get sectionsData => _data.sectionsData;
+  String get dbUId => _dbUId;
 
   // pulls new data from database
   Future<void> refreshData() async {
-    data = await DatabaseService.getAllUserData(user: user);
+    _data = await DatabaseService.getAllUserData(user: _user);
   }
+
+  Person personById(String id) {
+    return _data.personById(id);
+  }
+
+  Person get user => personById(_dbUId);
 
   // returns the data necessary to build the ToDo page
   ToDoData getToDoData() {
@@ -38,12 +47,8 @@ class CloudDataProvider extends ChangeNotifier {
     return CalendarData();
   }
 
-  // returns the data necessary to build the team page
-  TeamData getTeamData() {
-    return TeamData();
-  }
-
-  void newSectionData(List<Map<String, dynamic>> data) {
-    this._sectionData = data;
+  SectionsData newSectionsData(QuerySnapshot newSectionsData) {
+    _data.newSectionsData(newSectionsData);
+    return _data.sectionsData;
   }
 }

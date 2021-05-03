@@ -4,7 +4,6 @@ import 'package:bcnemotorsportapp/providers/CloudDataProvider.dart';
 import 'package:bcnemotorsportapp/screens/ScreenCalendar.dart';
 import 'package:bcnemotorsportapp/screens/ScreenTeam.dart';
 import 'package:bcnemotorsportapp/screens/ScreenToDo.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

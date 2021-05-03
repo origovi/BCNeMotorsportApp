@@ -1,8 +1,9 @@
 import 'package:bcnemotorsportapp/models/PopupMenu.dart';
+import 'package:bcnemotorsportapp/models/team/SectionsData.dart';
 import 'package:bcnemotorsportapp/providers/CloudDataProvider.dart';
 import 'package:bcnemotorsportapp/providers/SignInPovider.dart';
 import 'package:bcnemotorsportapp/services/DatabaseService.dart';
-import 'package:bcnemotorsportapp/widgets/SectionCard.dart';
+import 'package:bcnemotorsportapp/widgets/team/SectionCard.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -72,15 +73,13 @@ class _ScreenTeamState extends State<ScreenTeam> {
                 }
                 switch (snapshot.connectionState) {
                   case ConnectionState.active:
-                    List<Map<String, dynamic>> teamSnapMap =
-                        snapshot.data.docs.map((e) => e.data()).toList();
-                    Provider.of<CloudDataProvider>(context, listen: false)
-                        .newSectionData(teamSnapMap);
-                    return _SectionGrid(teamSnapMap);
+                    // new data is being saved while returned
+                    return _SectionGrid(Provider.of<CloudDataProvider>(context, listen: false)
+                        .newSectionsData(snapshot.data));
                     break;
                   default:
                     return _SectionGrid(
-                      Provider.of<CloudDataProvider>(context, listen: false).sectionData,
+                      Provider.of<CloudDataProvider>(context, listen: false).sectionsData,
                     );
                 }
               },
@@ -111,8 +110,9 @@ class _ScreenTeamState extends State<ScreenTeam> {
   }
 }
 
+// Draws the grid used to represent each section
 class _SectionGrid extends StatelessWidget {
-  final List<Map<String, dynamic>> _data;
+  final SectionsData _data;
 
   _SectionGrid(this._data);
 
@@ -125,9 +125,9 @@ class _SectionGrid extends StatelessWidget {
         crossAxisSpacing: 10,
         mainAxisSpacing: 10,
       ),
-      itemCount: _data.length,
+      itemCount: _data.size,
       itemBuilder: (context, index) {
-        return SectionCard(_data[index]['name'], _data[index]['about']);
+        return SectionCard(_data.sectionByIndex(index));
       },
     );
   }

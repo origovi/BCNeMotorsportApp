@@ -1,5 +1,5 @@
 import 'package:bcnemotorsportapp/providers/CloudDataProvider.dart';
-import 'package:bcnemotorsportapp/widgets/ToDoSection.dart';
+import 'package:bcnemotorsportapp/widgets/toDo/ToDoSection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

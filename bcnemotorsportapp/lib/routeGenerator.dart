@@ -1,9 +1,10 @@
+import 'package:bcnemotorsportapp/pages/PageDisplayItem.dart';
 import 'package:flutter/material.dart';
 import 'models/utilsAndErrors.dart';
 
 // Every page must be imported and then a route given
 import 'package:bcnemotorsportapp/pages/PageLoginOrHomeDecisor.dart';
-import 'screens/ScreenLogin.dart';
+import 'package:bcnemotorsportapp/pages/PageSection.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -13,6 +14,19 @@ class RouteGenerator {
       // Initial screen (root)
       case '/':
         return MaterialPageRoute(builder: (_) => PageLoginOrHomeDecisor());
+
+      case '/section':
+        return MaterialPageRoute(builder: (_) => PageSection(args));
+
+      case '/pageDisplayItem':
+        Map<String, dynamic> args2 = new Map<String, dynamic>.from(args);
+        return MaterialPageRoute(
+          builder: (_) => PageDisplayItem(
+            args2['child'],
+            heroTag: args2['heroTag'],
+            title: args2['title'],
+          ),
+        );
 
       // EXAMPLE WITH ARGUMENTS
       // case '/new-debt':

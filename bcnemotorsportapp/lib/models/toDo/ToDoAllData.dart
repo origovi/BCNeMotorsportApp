@@ -1,4 +1,4 @@
-import 'package:bcnemotorsportapp/models/ToDoSectionData.dart';
+import 'package:bcnemotorsportapp/models/toDo/ToDoSectionData.dart';
 import 'package:flutter/material.dart';
 
 class ToDoAllData {

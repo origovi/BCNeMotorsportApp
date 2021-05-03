@@ -6,6 +6,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 class SignInProvider extends ChangeNotifier {
   final BuildContext context;
   final GoogleSignIn googleSignIn = GoogleSignIn();
+  String _dbUId;
   bool _isSigningIn;
 
   SignInProvider(context) : this.context = context {
@@ -13,6 +14,7 @@ class SignInProvider extends ChangeNotifier {
   }
 
   bool get isSigningIn => _isSigningIn;
+  String get dbUId => _dbUId;
 
   set isSigningIn(bool isSigningIn) {
     _isSigningIn = isSigningIn;
@@ -24,7 +26,8 @@ class SignInProvider extends ChangeNotifier {
     final user = await googleSignIn.signIn();
     if (user != null) {
       // check if this user has permission or perhaps is Terrassa
-      if (!(await DatabaseService.isAValidUserMail(user.email))) {
+      String dbUId = await DatabaseService.isAValidUserMail(user.email);
+      if (dbUId == null) {
         await googleSignIn.disconnect();
         isSigningIn = false;
         return false;
@@ -35,8 +38,8 @@ class SignInProvider extends ChangeNotifier {
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
-
       await FirebaseAuth.instance.signInWithCredential(credential);
+      _dbUId = dbUId;
     }
     isSigningIn = false; // the setter is called
     return true;
