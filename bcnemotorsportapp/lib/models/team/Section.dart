@@ -5,14 +5,16 @@ class Section {
   String _sectionId;
   List<String> _memberIds;
   List<String> _chiefIds;
+  bool _hasAbout;
   String _about;
 
   // CONSTRUCTORS
-  Section({name, sectionId, memberIds, chiefIds, about}) {
+  Section({name, sectionId, memberIds, chiefIds, hasAbout, about}) {
     _name = name;
     _sectionId = sectionId;
     _memberIds = memberIds;
     _chiefIds = chiefIds;
+    _hasAbout = hasAbout;
     _about = about;
   }
 
@@ -21,6 +23,7 @@ class Section {
     _sectionId = data['sectionId'];
     _memberIds = new List<String>.from(data['members']);
     _chiefIds = new List<String>.from(data['chiefs']);
+    _hasAbout = data['hasAbout'];
     _about = data['about'];
   }
 
@@ -31,6 +34,7 @@ class Section {
   List<String> get memberIds => _memberIds;
   int get numChiefs => _chiefIds.length;
   List<String> get chiefIds => _chiefIds;
+  bool get hasAbout => _hasAbout;
   String get about => _about;
 
   // METHODS

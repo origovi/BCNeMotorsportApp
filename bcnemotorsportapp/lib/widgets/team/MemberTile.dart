@@ -1,5 +1,5 @@
 import 'package:bcnemotorsportapp/models/team/Person.dart';
-import 'package:bcnemotorsportapp/widgets/NiceRectangle.dart';
+import 'package:bcnemotorsportapp/widgets/NiceBox.dart';
 import 'package:bcnemotorsportapp/widgets/ShowImage.dart';
 import 'package:flutter/material.dart';
 
@@ -13,7 +13,7 @@ class MemberTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(top: 10),
-      child: NiceRectangle(
+      child: NiceBox(
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

@@ -2,7 +2,10 @@ import 'package:bcnemotorsportapp/models/PopupMenu.dart';
 import 'package:bcnemotorsportapp/models/team/SectionsData.dart';
 import 'package:bcnemotorsportapp/providers/CloudDataProvider.dart';
 import 'package:bcnemotorsportapp/providers/SignInPovider.dart';
+import 'package:bcnemotorsportapp/screens/ScreenMe.dart';
 import 'package:bcnemotorsportapp/services/DatabaseService.dart';
+import 'package:bcnemotorsportapp/widgets/NiceBox.dart';
+import 'package:bcnemotorsportapp/widgets/ShowImage.dart';
 import 'package:bcnemotorsportapp/widgets/team/SectionCard.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -85,18 +88,7 @@ class _ScreenTeamState extends State<ScreenTeam> {
               },
               stream: DatabaseService.teamStream(),
             ),
-            ListView(
-              padding:
-                  EdgeInsets.only(top: MediaQuery.of(context).padding.top, right: 10, left: 10),
-              children: [
-                Container(
-                  child: TextButton(
-                    child: Text("edede"),
-                    onPressed: () {},
-                  ),
-                ),
-              ],
-            ),
+            ScreenMe(Provider.of<CloudDataProvider>(context, listen: false).user, setState),
           ],
         ),
       ),

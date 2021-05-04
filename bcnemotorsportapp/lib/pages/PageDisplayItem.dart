@@ -4,8 +4,9 @@ class PageDisplayItem extends StatelessWidget {
   final Widget child;
   final String title;
   final String heroTag;
+  final List<Widget> actions;
 
-  PageDisplayItem(this.child, {this.title, this.heroTag});
+  PageDisplayItem(this.child, {this.title, this.heroTag, this.actions});
 
   @override
   Widget build(BuildContext context) {
@@ -16,6 +17,7 @@ class PageDisplayItem extends StatelessWidget {
           : AppBar(
               backgroundColor: Colors.black,
               title: Text(title),
+              actions: actions,
             ),
       body: Center(
         child: heroTag != null

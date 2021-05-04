@@ -7,21 +7,24 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class AllData {
+  String _dbId;
   CalendarData _calendarData;
   ToDoAllData _toDoAllData;
   SectionsData _sectionsData;
   PersonsData _personsData;
 
   // CONSTRUCTORS
-  AllData({@required SectionsData sectionsData, @required PersonsData personsData}) {
+  AllData({@required SectionsData sectionsData, @required PersonsData personsData, @required String dbId}) {
     _sectionsData = sectionsData;
     _personsData = personsData;
+    _dbId = dbId;
   }
 
-  AllData.fromDatabase({@required QuerySnapshot sectionsData, @required QuerySnapshot personsData})
+  AllData.fromDatabase({@required QuerySnapshot sectionsData, @required QuerySnapshot personsData, @required String dbId})
       : this(
             sectionsData: SectionsData.fromDatabase(sectionsData),
-            personsData: PersonsData.fromDatabase(personsData));
+            personsData: PersonsData.fromDatabase(personsData),
+            dbId: dbId);
   
   // AllData.fromRaw({@required sectionsData, @required personsData}) {
   //   _sectionsData = SectionsData.fromRaw(sectionsData);
@@ -29,6 +32,7 @@ class AllData {
   // }
 
   // GETTERS
+  String get dbId => _dbId;
   CalendarData get calendarData => _calendarData;
 
   ToDoAllData get toDoAllData => _toDoAllData;

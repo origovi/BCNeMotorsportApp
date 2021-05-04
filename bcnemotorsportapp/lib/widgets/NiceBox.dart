@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-class NiceRectangle extends StatelessWidget {
+class NiceBox extends StatelessWidget {
   final Widget child;
   final int radius;
   final void Function() onTap;
 
-  NiceRectangle({this.child, this.radius=10, this.onTap});
+  NiceBox({this.child, this.radius=10, this.onTap});
 
   @override
   Widget build(BuildContext context) {

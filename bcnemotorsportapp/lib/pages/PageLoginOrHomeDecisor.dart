@@ -13,7 +13,7 @@ class PageLoginOrHomeDecisor extends StatelessWidget {
   Widget build(BuildContext context) {
     return StreamBuilder(
       stream: FirebaseAuth.instance.authStateChanges(),
-      builder: (context, userSnapshot) {
+      builder: (context, AsyncSnapshot<User>userSnapshot) {
         final signInProvider = Provider.of<SignInProvider>(context);
         // show error
         if (userSnapshot.hasError)
@@ -30,7 +30,7 @@ class PageLoginOrHomeDecisor extends StatelessWidget {
               if (dataSnapshot.hasError)
                 return PageError(dataSnapshot.error.toString());
               else if (dataSnapshot.hasData) {
-                Provider.of<CloudDataProvider>(context, listen: false).init(data: dataSnapshot.data, user: userSnapshot.data, dbUId: signInProvider.dbUId);
+                Provider.of<CloudDataProvider>(context, listen: false).init(data: dataSnapshot.data, user: userSnapshot.data);
                 return ScreenHome();
               } else
                 return ScreenLogin(loading: true);

@@ -11,15 +11,21 @@ class ShowImage extends StatelessWidget {
   final bool displayable;
   final String displayTitle;
   final Widget imagePlaceholder;
+  final List<Widget> displayActions;
+  final void Function() onTap;
 
   ShowImage(this.imageName,
       {this.circular=true,
       this.size=50,
       this.imagePlaceholder = const Icon(Icons.person),
       this.displayable = false,
-      this.displayTitle}) {
+      this.displayTitle,
+      this.onTap,
+      this.displayActions}) {
     assert(!displayable || displayTitle != null,
         "If displayable is set to true, displayTitle must be set.");
+    assert(displayActions==null || displayable);
+    assert(onTap==null || !displayable);
   }
 
   @override
@@ -58,9 +64,10 @@ class ShowImage extends StatelessWidget {
                           ),
                           'heroTag': imageName,
                           'title': displayTitle,
+                          'actions': displayActions,
                         },
                       )
-                  : null,
+                  : onTap,
             ),
           );
         else

@@ -12,19 +12,21 @@ class CloudDataProvider extends ChangeNotifier {
   final BuildContext _context;
   AllData _data;
   User _user;
-  String _dbUId;
 
   CloudDataProvider(this._context);
 
-  void init({@required data, @required user, @required dbUId}) {
+  void init({@required data, @required user}) {
     this._data = data;
     this._user = user;
-    this._dbUId = dbUId;
+  }
+
+  void reload() {
+    notifyListeners();
   }
 
   // GETTERS
   SectionsData get sectionsData => _data.sectionsData;
-  String get dbUId => _dbUId;
+  String get dbUId => _data.dbId;
 
   // pulls new data from database
   Future<void> refreshData() async {
@@ -35,7 +37,7 @@ class CloudDataProvider extends ChangeNotifier {
     return _data.personById(id);
   }
 
-  Person get user => personById(_dbUId);
+  Person get user => personById(dbUId);
 
   // returns the data necessary to build the ToDo page
   ToDoData getToDoData() {
@@ -50,5 +52,13 @@ class CloudDataProvider extends ChangeNotifier {
   SectionsData newSectionsData(QuerySnapshot newSectionsData) {
     _data.newSectionsData(newSectionsData);
     return _data.sectionsData;
+  }
+
+  Future<void> updateSectionAbout(String sectionId, String newAbout) async {
+    await DatabaseService.updateSectionAbout(sectionId, newAbout);
+  }
+
+  Future<void> updatePersonAbout(String dbId, String newAbout) async {
+    await DatabaseService.updatePersonAbout(dbId, newAbout);
   }
 }

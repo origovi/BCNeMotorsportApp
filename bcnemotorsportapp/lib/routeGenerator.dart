@@ -25,6 +25,7 @@ class RouteGenerator {
             args2['child'],
             heroTag: args2['heroTag'],
             title: args2['title'],
+            actions: args2['actions'],
           ),
         );
 

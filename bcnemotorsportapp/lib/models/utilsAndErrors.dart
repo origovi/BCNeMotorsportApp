@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 class PageError extends StatelessWidget {
   final String _errorMessage;
@@ -116,13 +117,21 @@ class Popup {
   }
 }
 
-void snackDatabaseUpdated(BuildContext context) {
+Future<PickedFile> pickGalleryImage() async {
+  return await ImagePicker().getImage(source: ImageSource.gallery);
+}
+
+void snackMessage3Secs(BuildContext context, String message) {
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(
-      content: Text("Changes have been updated"),
+      content: Text(message),
       duration: Duration(seconds: 3),
     ),
   );
+}
+
+void snackDatabaseUpdated(BuildContext context) {
+  snackMessage3Secs(context, "Changes have been updated");
 }
 
 // Used when user have to sign in/up at AuthScreen.dart
