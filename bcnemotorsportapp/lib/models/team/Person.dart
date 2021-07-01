@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class Person {
   String _dbId;
   String _name;
-  String _surname;
+  String _surnames;
   bool _teamLeader;
   bool _hasAbout;
   String _about;
@@ -13,21 +13,29 @@ class Person {
   //la foto aniria aqui
 
   // CONSTRUCTORS
-  Person({dbId, name, surname, sections, hasAbout, about, email, teamLeader}) {
+  Person(
+      {String dbId,
+      @required String name,
+      @required String surnames,
+      Map<String, Map<String, dynamic>> sections,
+      bool hasAbout,
+      about,
+      @required String email,
+      @required bool teamLeader}) {
     _dbId = dbId;
     _name = name;
-    _surname = surname;
+    _surnames = surnames;
     _teamLeader = teamLeader;
-    _hasAbout = hasAbout;
+    _hasAbout = hasAbout ?? false;
     _about = about;
     _email = email;
-    _sections = sections;
+    _sections = sections ?? {};
   }
 
   Person.fromRaw(Map<String, dynamic> data) {
     _dbId = data['dbId'];
     _name = data['name'];
-    _surname = data['surname'];
+    _surnames = data['surname'];
     _teamLeader = data['teamLeader'];
     _hasAbout = data['hasAbout'];
     _about = data['about'];
@@ -37,22 +45,56 @@ class Person {
 
   // GETTERS
   String get dbId => _dbId;
+  String get profilePhotoName => _dbId + '.jpg';
   String get name => _name;
-  String get surname => _surname;
+  String get surname => _surnames;
   bool get isTeamLeader => _teamLeader;
-  String get completeName => _name + ' ' + _surname;
+  String get completeName => _name + ' ' + _surnames;
   bool get hasAbout => _hasAbout;
   String get about => _about;
   String get email => _email;
+  Map<String, Map<String, dynamic>> get sections => _sections;
 
-  String role(String sectionId) => _sections[sectionId]['role'];
+  List<String> get memberSectionIds {
+    List<String> res = [];
+    _sections.forEach((key, value) {
+      res.add(key);
+    });
+    return res;
+  }
+  
+  List<String> get chiefSectionIds {
+    List<String> res = [];
+    _sections.forEach((key, value) {
+      if (value['chief']) res.add(key);
+    });
+    return res;
+  }
+
+  List<String> get onlyMemberSectionIds {
+    List<String> res = [];
+    _sections.forEach((key, value) {
+      if (!value['chief']) res.add(key);
+    });
+    return res;
+  }
+
+  String role(String sectionId) => _sections[sectionId]['role'] ?? "Internal Error";
+
+  // SETTERS
+  set about(String newAbout) {
+    _hasAbout = (newAbout != "");
+    _about = newAbout;
+  }
+
+  void setDbId(String newDbId) => this._dbId = newDbId;
 
   // METHODS
   Map<String, dynamic> toRaw() {
     Map<String, dynamic> res = {};
     res['dbId'] = _dbId;
     res['name'] = _name;
-    res['surname'] = _surname;
+    res['surname'] = _surnames;
     res['teamLeader'] = _teamLeader;
     res['about'] = _about;
     res['hasAbout'] = _hasAbout;

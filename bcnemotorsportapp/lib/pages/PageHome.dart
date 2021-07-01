@@ -4,16 +4,17 @@ import 'package:bcnemotorsportapp/providers/CloudDataProvider.dart';
 import 'package:bcnemotorsportapp/screens/ScreenCalendar.dart';
 import 'package:bcnemotorsportapp/screens/ScreenTeam.dart';
 import 'package:bcnemotorsportapp/screens/ScreenToDo.dart';
+import 'package:bcnemotorsportapp/screens/ScreenTesting.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class ScreenHome extends StatefulWidget {
-  ScreenHome();
+class PageHome extends StatefulWidget {
+  PageHome();
   @override
-  _ScreenHomeState createState() => _ScreenHomeState();
+  _PageHomeState createState() => _PageHomeState();
 }
 
-class _ScreenHomeState extends State<ScreenHome> {
+class _PageHomeState extends State<PageHome> {
   int _currentSubsection;
 
   @override
@@ -24,6 +25,7 @@ class _ScreenHomeState extends State<ScreenHome> {
 
   @override
   Widget build(BuildContext context) {
+    List<Widget> sections = [ScreenCalendar(), ScreenToDo(), ScreenTesting(), ScreenTeam()];
     //final user = Provider.of<User>(context);
     // if (user != null && user.emailVerified)
     //   Provider.of<DebtsStatus>(context, listen: false).signIn(user);
@@ -39,6 +41,7 @@ class _ScreenHomeState extends State<ScreenHome> {
         currentIndex: _currentSubsection,
         selectedItemColor: TeamColor.teamColor,
         showUnselectedLabels: false,
+        type: BottomNavigationBarType.fixed,
         items: [
           BottomNavigationBarItem(
             label: "Next events",
@@ -46,7 +49,11 @@ class _ScreenHomeState extends State<ScreenHome> {
           ),
           BottomNavigationBarItem(
             label: "To Do",
-            icon: Icon(Icons.view_list_outlined),
+            icon: Icon(Icons.check_box)
+          ),
+          BottomNavigationBarItem(
+            label: "Testing",
+            icon: Icon(Icons.car_repair)
           ),
           BottomNavigationBarItem(
             label: "Team",
@@ -57,14 +64,9 @@ class _ScreenHomeState extends State<ScreenHome> {
       ),
       //body: Subsection(_currentSubsection),
       body: RefreshIndicator(
-        child: ScrollConfiguration(
-          behavior: NoGlowEffect(),
-          child: sections[_currentSubsection],
-        ),
+        child: sections[_currentSubsection],
         onRefresh: Provider.of<CloudDataProvider>(context, listen: false).refreshData,
       ),
     );
   }
 }
-
-List<Widget> sections = [ScreenCalendar(), ScreenToDo(), ScreenTeam()];

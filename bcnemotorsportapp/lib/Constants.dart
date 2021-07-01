@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 class TeamColor {
-  static final Color teamColor = Color.fromARGB(255, 0x04, 0x34, 0x64);
+  static const Color teamColor = Color.fromARGB(255, 0x04, 0x34, 0x64);
   static final MaterialColor materialTeamColor = MaterialColor(_colorARGB, _color);
-  static final int _colorARGB = 0xFF043464;
+  static const int _colorARGB = 0xFF043464;
   static final Map<int, Color> _color = {
     50: Color.fromRGBO(teamColor.red, teamColor.green, teamColor.blue, 0.1),
     100: Color.fromRGBO(teamColor.red, teamColor.green, teamColor.blue, 0.2),
@@ -19,7 +19,7 @@ class TeamColor {
 }
 
 class Phrases {
-  static final String intruderTitle = "Oops...";
-  static final String intruderMessage =
+  static const String intruderTitle = "Oops...";
+  static const String intruderMessage =
       "You do not have access to this application. If you think this is an error, please contact your friendliest TL. If you are from another team we wish you the best to the competitions.";
 }

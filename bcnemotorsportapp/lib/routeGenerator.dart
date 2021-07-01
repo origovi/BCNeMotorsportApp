@@ -1,22 +1,31 @@
 import 'package:bcnemotorsportapp/pages/PageDisplayItem.dart';
+import 'package:bcnemotorsportapp/pages/PageNewEvent.dart';
+import 'package:bcnemotorsportapp/pages/PageNewMember.dart';
 import 'package:flutter/material.dart';
 import 'models/utilsAndErrors.dart';
 
 // Every page must be imported and then a route given
-import 'package:bcnemotorsportapp/pages/PageLoginOrHomeDecisor.dart';
+import 'package:bcnemotorsportapp/pages/PageDecisor.dart';
 import 'package:bcnemotorsportapp/pages/PageSection.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     final args = settings.arguments;
+      print(settings.name);
 
     switch (settings.name) {
       // Initial screen (root)
       case '/':
-        return MaterialPageRoute(builder: (_) => PageLoginOrHomeDecisor());
+        return MaterialPageRoute(builder: (_) => PageDecisor());
 
-      case '/section':
+      case '/team/section':
         return MaterialPageRoute(builder: (_) => PageSection(args));
+        
+      case '/team/newMember':
+        return MaterialPageRoute(builder: (_) => PageNewMember());
+
+      case '/calendar/newEvent':
+        return MaterialPageRoute(builder: (_) => PageNewEvent());
 
       case '/pageDisplayItem':
         Map<String, dynamic> args2 = new Map<String, dynamic>.from(args);

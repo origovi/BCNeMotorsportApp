@@ -1,6 +1,5 @@
 import 'package:bcnemotorsportapp/models/utilsAndErrors.dart';
 import 'package:bcnemotorsportapp/services/StorageService.dart';
-import 'package:bcnemotorsportapp/widgets/team/ImageContainer.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
@@ -14,18 +13,24 @@ class ShowImage extends StatelessWidget {
   final List<Widget> displayActions;
   final void Function() onTap;
 
-  ShowImage(this.imageName,
-      {this.circular=true,
-      this.size=50,
-      this.imagePlaceholder = const Icon(Icons.person),
-      this.displayable = false,
-      this.displayTitle,
-      this.onTap,
-      this.displayActions}) {
+  ShowImage(
+    this.imageName, {
+    this.circular = true,
+    this.size = 50,
+    imagePlaceholder = const Icon(Icons.person),
+    this.displayable = false,
+    this.displayTitle,
+    this.onTap,
+    this.displayActions,
+  }) : this.imagePlaceholder = Container(
+          height: size,
+          width: size,
+          child: Center(child: imagePlaceholder),
+        ) {
     assert(!displayable || displayTitle != null,
         "If displayable is set to true, displayTitle must be set.");
-    assert(displayActions==null || displayable);
-    assert(onTap==null || !displayable);
+    assert(displayActions == null || displayable, "displayActions cannot be set if !displayable.");
+    assert(onTap == null || !displayable);
   }
 
   @override
@@ -37,41 +42,57 @@ class ShowImage extends StatelessWidget {
           Popup.errorPopup(context, snapshot.error.toString());
           return imagePlaceholder;
         } else if (snapshot.hasData)
-          return Hero(
-            tag: imageName,
-            child: ImageContainer(
-              circular: circular,
-              size: size,
-              image: CachedNetworkImage(
-                imageUrl: snapshot.data,
-                placeholder: (_, __) => imagePlaceholder,
-                fit: BoxFit.cover,
-              ),
-              onTap: displayable
-                  ? () => Navigator.of(context).pushNamed(
-                        '/pageDisplayItem',
-                        arguments: {
-                          'child': InteractiveViewer(
-                            minScale: 1,
-                            maxScale: 100,
-                            boundaryMargin: EdgeInsets.all(100),
-                            panEnabled: false,
-                            child: CachedNetworkImage(
-                              imageUrl: snapshot.data,
-                              placeholder: (_, __) => imagePlaceholder,
-                              fit: BoxFit.cover,
+          return CachedNetworkImage(
+            imageUrl: snapshot.data,
+            placeholder: (_, __) => imagePlaceholder,
+            errorWidget: (_, __, ___) => imagePlaceholder,
+            imageBuilder: (context, image) {
+              return GestureDetector(
+                onTap: displayable
+                    ? () => Navigator.of(context).pushNamed(
+                          '/pageDisplayItem',
+                          arguments: {
+                            'child': Column(
+                              children: [
+                                Expanded(
+                                  child: CachedNetworkImage(
+                                    imageUrl: snapshot.data,
+                                    placeholder: (_, __) => imagePlaceholder,
+                                    fit: BoxFit.contain,
+                                    imageBuilder: (context, image) {
+                                      return InteractiveViewer(
+                                        minScale: 1,
+                                        maxScale: 50,
+                                        child: Image(image: image),
+                                      );
+                                    },
+                                  ),
+                                ),
+                              ],
                             ),
-                          ),
-                          'heroTag': imageName,
-                          'title': displayTitle,
-                          'actions': displayActions,
-                        },
-                      )
-                  : onTap,
-            ),
+                            'heroTag': 'profile_' + imageName,
+                            'title': displayTitle,
+                            'actions': displayActions,
+                          },
+                        )
+                    : onTap,
+                child: Hero(
+                  tag: 'profile_' + imageName,
+                  child: Container(
+                    height: size,
+                    width: size,
+                    decoration: BoxDecoration(
+                      shape: this.circular ? BoxShape.circle : null,
+                      image: DecorationImage(image: image, fit: BoxFit.cover),
+                    ),
+                  ),
+                ),
+              );
+            },
+            fit: BoxFit.cover,
           );
         else
-          return ImageContainer(hasData: false);
+          return imagePlaceholder;
       },
     );
   }

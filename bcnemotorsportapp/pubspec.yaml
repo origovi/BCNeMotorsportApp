@@ -26,6 +26,7 @@ dependencies:
   cached_network_image: ^3.0.0
   cloud_firestore: ^1.0.6
   cupertino_icons: ^1.0.2
+  data_connection_checker: ^0.3.4
   firebase_auth: ^1.1.1
   firebase_core: ^1.0.4
   firebase_storage: ^8.0.5
@@ -34,6 +35,8 @@ dependencies:
   image_picker: ^0.7.4
   provider: ^5.0.0
   sliver_tools: ^0.2.1
+  syncfusion_flutter_calendar: ^19.1.64
+  url_launcher: ^6.0.3
 
 dev_dependencies:
   flutter_test:

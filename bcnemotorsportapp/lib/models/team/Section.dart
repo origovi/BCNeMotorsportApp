@@ -31,9 +31,18 @@ class Section {
   int get size => _memberIds.length;
   String get name => _name;
   String get sectionId => _sectionId;
+  int get numMembers => _memberIds.length;
   List<String> get memberIds => _memberIds;
   int get numChiefs => _chiefIds.length;
   List<String> get chiefIds => _chiefIds;
+  List<String> get onlyMemberIds {
+    List<String> res = [];
+    _memberIds.forEach((element) {
+      if (!chiefIds.contains(element)) res.add(element);
+    });
+    return res;
+  }
+
   bool get hasAbout => _hasAbout;
   String get about => _about;
 
@@ -44,5 +53,4 @@ class Section {
     }
     return false;
   }
-
 }

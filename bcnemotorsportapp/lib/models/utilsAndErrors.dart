@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 
 class PageError extends StatelessWidget {
@@ -14,8 +15,11 @@ class PageError extends StatelessWidget {
       appBar: AppBar(
         title: Text("Error"),
       ),
-      body: Center(
-        child: Text("Error: $_errorMessage"),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10),
+        child: Center(
+          child: Text("Error: $_errorMessage"),
+        ),
       ),
     );
   }
@@ -29,6 +33,21 @@ void errorScreen(BuildContext context, [String errorMessage]) {
 }
 
 class Popup {
+  static void loadingPopup(BuildContext context, [bool dismissible = false]) {
+    showDialog(
+      context: context,
+      barrierDismissible: dismissible,
+      builder: (context) {
+        return WillPopScope(
+          onWillPop: () {},
+          child: Center(
+            child: CircularProgressIndicator(),
+          ),
+        );
+      },
+    );
+  }
+
   static void errorPopup(BuildContext context, [String errorMessage = "Unexpected error"]) {
     showDialog(
       context: context,
@@ -64,22 +83,26 @@ class Popup {
     );
   }
 
-  static void fancyPopup(
+  static Future<void> fancyPopup(
       {@required BuildContext context,
       @required List<Widget> children,
+      CrossAxisAlignment columnCrossAlignment = CrossAxisAlignment.center,
       bool barrierDismissible = true}) {
-    showDialog(
+    return showDialog(
       context: context,
       builder: (context) {
         return Padding(
-          padding: EdgeInsets.only(left: 25, right: 25, bottom: 200),
+          padding: EdgeInsets.only(left: 25, right: 25, bottom: 150),
           child: Center(
             child: Material(
               borderRadius: BorderRadius.circular(30),
               color: Colors.white,
               child: Padding(
-                padding: EdgeInsets.only(top: 20, left: 20, right: 20),
-                child: Column(mainAxisSize: MainAxisSize.min, children: children),
+                padding: EdgeInsets.only(top: 20, left: 20, right: 20, bottom: 7),
+                child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: columnCrossAlignment,
+                    children: children),
               ),
             ),
           ),
@@ -95,7 +118,7 @@ class Popup {
       String text1 = "Yes",
       String text2 = "Cancel",
       @required void Function() onPressed1,
-      @required void Function() onPressed2}) {
+      void Function() onPressed2}) {
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
@@ -107,7 +130,7 @@ class Popup {
             child: Text(text1),
           ),
           FlatButton(
-            onPressed: onPressed2,
+            onPressed: onPressed2 ?? Navigator.of(context).pop,
             child: Text(text2),
           )
         ],
@@ -117,8 +140,58 @@ class Popup {
   }
 }
 
+class Functions {
+  static int lcs(String x, String y) {
+    List<List<int>> table = List<List<int>>.filled(x.length + 1, List<int>.filled(y.length + 1, 0));
+
+    for (int i = 0; i <= x.length; i++) {
+      for (int j = 0; j <= y.length; j++) {
+        if (i == 0 || j == 0)
+          table[i][j] = 0;
+        else if (x[i - 1] == y[j - 1])
+          table[i][j] = table[i - 1][j - 1] + 1;
+        else
+          table[i][j] = max(table[i - 1][j], table[i][j - 1]);
+      }
+    }
+    return table[x.length][y.length];
+  }
+
+  static num abs(num x) {
+    if (x < 0.0) return -x;
+    return x;
+  }
+
+  static num min(num x, num y) {
+    if (x < y) return x;
+    return y;
+  }
+
+  static num max(num x, num y) {
+    if (x > y) return x;
+    return y;
+  }
+
+  static bool validEmail(String email) {
+    return RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+        .hasMatch(email);
+  }
+
+  static String randomID(int length) {
+    const _chars = 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
+    Random _rnd = Random();
+
+    return String.fromCharCodes(
+        Iterable.generate(length, (_) => _chars.codeUnitAt(_rnd.nextInt(_chars.length))));
+  }
+}
+
 Future<PickedFile> pickGalleryImage() async {
-  return await ImagePicker().getImage(source: ImageSource.gallery);
+  try {
+    return await ImagePicker().getImage(source: ImageSource.gallery);
+  } on PlatformException {
+    return null;
+  }
 }
 
 void snackMessage3Secs(BuildContext context, String message) {
@@ -180,32 +253,10 @@ String formatDateTime(DateTime d) {
   return s;
 }
 
-double absDouble(double x) {
-  if (x < 0.0) return -x;
-  return x;
-}
-
-int absInt(int x) {
-  if (x < 0.0) return -x;
-  return x;
-}
-
-class Pair {
-  dynamic first, second;
+class Pair<T, Y> {
+  T first;
+  Y second;
   Pair(this.first, this.second);
-}
-
-bool validEmail(String email) {
-  return RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-      .hasMatch(email);
-}
-
-String randomID(int length) {
-  const _chars = 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
-  Random _rnd = Random();
-
-  return String.fromCharCodes(
-      Iterable.generate(length, (_) => _chars.codeUnitAt(_rnd.nextInt(_chars.length))));
 }
 
 class MyClipper extends CustomClipper<Path> {

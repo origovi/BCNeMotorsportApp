@@ -24,7 +24,7 @@ class SignInProvider extends ChangeNotifier {
     final user = await googleSignIn.signIn();
     if (user != null) {
       // check if this user has permission or perhaps is Terrassa
-      if (await DatabaseService.isEmailAuthorized(user.email)) {
+      if (!await DatabaseService.isEmailAuthorized(user.email)) {
         await googleSignIn.disconnect();
         isSigningIn = false;
         return false;
@@ -42,7 +42,7 @@ class SignInProvider extends ChangeNotifier {
   }
 
   Future<void> logout() async {
-    await googleSignIn.disconnect();
     FirebaseAuth.instance.signOut();
+    await googleSignIn.disconnect();
   }
 }

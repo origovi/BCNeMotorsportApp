@@ -2,8 +2,10 @@ import 'package:bcnemotorsportapp/models/team/Person.dart';
 import 'package:bcnemotorsportapp/models/utilsAndErrors.dart';
 import 'package:bcnemotorsportapp/providers/CloudDataProvider.dart';
 import 'package:bcnemotorsportapp/services/StorageService.dart';
+import 'package:bcnemotorsportapp/widgets/Buttons.dart';
 import 'package:bcnemotorsportapp/widgets/NiceBox.dart';
 import 'package:bcnemotorsportapp/widgets/ShowImage.dart';
+import 'package:bcnemotorsportapp/widgets/team/SectionGrid.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -19,6 +21,9 @@ class ScreenMe extends StatefulWidget {
 }
 
 class _ScreenMeState extends State<ScreenMe> {
+  List<String> _chiefSectionsId;
+  List<String> _onlyMemberSectionsId;
+
   bool _hasAbout;
   bool _aboutCanSaveAgain;
   TextEditingController _noteController;
@@ -28,6 +33,10 @@ class _ScreenMeState extends State<ScreenMe> {
   @override
   void initState() {
     super.initState();
+
+    _chiefSectionsId = widget._me.chiefSectionIds;
+    _onlyMemberSectionsId = widget._me.onlyMemberSectionIds;
+
     _hasAbout = widget._me.hasAbout;
     _aboutCanSaveAgain = true;
     if (_hasAbout)
@@ -38,9 +47,10 @@ class _ScreenMeState extends State<ScreenMe> {
   }
 
   Future<void> _saveAbout() async {
+    final provider = Provider.of<CloudDataProvider>(context, listen: false);
     await Future.delayed(Duration(seconds: 3));
-    await Provider.of<CloudDataProvider>(context, listen: false)
-        .updatePersonAbout(widget._me.dbId, _newTempAbout);
+    widget._me.about = _newTempAbout;
+    await provider.updatePersonAbout(widget._me.dbId, _newTempAbout);
     //snackDatabaseUpdated(context);
     _aboutCanSaveAgain = true;
   }
@@ -48,7 +58,7 @@ class _ScreenMeState extends State<ScreenMe> {
   Future<void> _updateProfileImage(BuildContext context) async {
     PickedFile image = await pickGalleryImage();
     if (image != null) {
-      await StorageService.uploadProfileImage(image, widget._me.dbId + '.jpg');
+      await StorageService.uploadProfileImage(image, widget._me.profilePhotoName);
       snackDatabaseUpdated(context);
       widget._setStateParent(() {});
       Navigator.of(context).pop();
@@ -68,7 +78,7 @@ class _ScreenMeState extends State<ScreenMe> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 ShowImage(
-                  widget._me.dbId + '.jpg',
+                  widget._me.profilePhotoName,
                   size: 80,
                   displayable: true,
                   displayTitle: widget._me.completeName,
@@ -92,8 +102,8 @@ class _ScreenMeState extends State<ScreenMe> {
                   visible: _hasAbout,
                   child: Material(
                     borderRadius: BorderRadius.circular(5),
-                    elevation: 5.0,
                     child: TextField(
+                      maxLines: 2,
                       controller: _noteController,
                       focusNode: _aboutFocus,
                       onChanged: (text) {
@@ -105,8 +115,6 @@ class _ScreenMeState extends State<ScreenMe> {
                       },
                       keyboardType: TextInputType.multiline,
                       textCapitalization: TextCapitalization.sentences,
-                      minLines: 3,
-                      maxLines: null,
                       decoration: InputDecoration(
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(5),
@@ -120,21 +128,9 @@ class _ScreenMeState extends State<ScreenMe> {
                       ),
                     ),
                   ),
-                ),
-                Visibility(
-                  visible: !_hasAbout,
-                  child: Center(
-                    child: FlatButton(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(Icons.add),
-                          Text(" Add About"),
-                        ],
-                      ),
+                  replacement: Center(
+                    child: FlatIconButton(
+                      text: "Add About",
                       onPressed: () {
                         setState(() {
                           _aboutFocus.requestFocus();
@@ -147,14 +143,66 @@ class _ScreenMeState extends State<ScreenMe> {
               ],
             ),
           ),
-          Container(
-            child: TextButton(
-              child: Text("edede"),
-              onPressed: () {},
+          //Column(children: List.filled(10, Container(height: 50,color: Colors.red,)),),
+          // CHIEF SECTIONS
+          Visibility(
+            visible: _chiefSectionsId.length > 0,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 30, left: 3),
+                  child: Text(
+                    "CHIEF OF",
+                    style: TextStyle(
+                      color: Colors.grey[600],
+                      fontWeight: FontWeight.bold,
+                      fontSize: 12,
+                    ),
+                  ),
+                ),
+                SizedBox(height: 10),
+                SectionGrid(
+                  data: Provider.of<CloudDataProvider>(context, listen: false).sectionsData,
+                  desiredSections: _chiefSectionsId,
+                  shrinkWrap: true,
+                ),
+              ],
+            ),
+          ),
+          // MEMBER SECTIONS
+          Visibility(
+            visible: _onlyMemberSectionsId.length > 0,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 30, left: 3),
+                  child: Text(
+                    "MEMBER OF",
+                    style: TextStyle(
+                      color: Colors.grey[600],
+                      fontWeight: FontWeight.bold,
+                      fontSize: 12,
+                    ),
+                  ),
+                ),
+                SizedBox(height: 10),
+                SectionGrid(
+                  data: Provider.of<CloudDataProvider>(context, listen: false).sectionsData,
+                  desiredSections: _onlyMemberSectionsId,
+                  shrinkWrap: true,
+                ),
+              ],
             ),
           ),
         ],
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 }

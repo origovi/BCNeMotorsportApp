@@ -18,7 +18,9 @@ class ScreenWithLogo extends StatelessWidget {
               'assets/white_team_logo.png',
               scale: 1.5,
             ),
-            Container(height: 200,
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 30),
+              height: 200,
               child: Center(child: theWidget),
             ),
           ],
