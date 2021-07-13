@@ -184,7 +184,8 @@ class _PageSectionState extends State<PageSection> {
                                     context,
                                     message:
                                         "${newOnlyMembers[personIndex].name} will no longer be ${chief ? "chief" : "a member"} of ${widget._data.name}. Changes need to be saved after.",
-                                    text1: "Accept",
+                                    text1: "Bye bye",
+                                    color1: Colors.red,
                                     onPressed1: () {
                                       setStateBuilder(() => newOnlyMembers.removeAt(personIndex));
                                       Navigator.of(context).pop();
@@ -355,7 +356,7 @@ class _PageSectionState extends State<PageSection> {
                 ),
                 // ADD ABOUT, NOT VISIBLE IF NOT CHIEF
                 Visibility(
-                  visible: !_hasAbout && _amIChief,
+                  visible: !_hasAbout && (_amIChief || _amITeamLeader),
                   child: Center(
                     child: FlatIconButton(
                       text: "Add About",

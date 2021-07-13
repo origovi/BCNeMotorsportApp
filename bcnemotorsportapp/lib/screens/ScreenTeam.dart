@@ -1,4 +1,4 @@
-import 'package:bcnemotorsportapp/models/PopupMenu.dart';
+import 'package:bcnemotorsportapp/models/popupMenu.dart';
 import 'package:bcnemotorsportapp/models/team/Person.dart';
 import 'package:bcnemotorsportapp/models/utilsAndErrors.dart';
 import 'package:bcnemotorsportapp/providers/CloudDataProvider.dart';
@@ -70,129 +70,126 @@ class _ScreenTeamState extends State<ScreenTeam> {
             });
           }
 
-          return Stack(
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              Text(
+                "  Team Members:",
+                style: TextStyle(
+                  color: Colors.grey[600],
+                  fontWeight: FontWeight.bold,
+                  fontSize: 12,
+                ),
+              ),
+              Divider(thickness: 1.5),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 7),
+                height: 250,
+                child: ListView.separated(
+                  separatorBuilder: (context, personIndex) {
+                    return Divider(
+                      thickness: 1,
+                    );
+                  },
+                  itemCount: allUserList.length + addList.length,
+                  itemBuilder: (context, personIndex) {
+                    if (personIndex < allUserList.length) {
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(allUserList[personIndex].email),
+                              Text(
+                                allUserList[personIndex].completeName,
+                                style: TextStyle(
+                                  color: Colors.grey[600],
+                                  fontSize: 10,
+                                ),
+                              ),
+                            ],
+                          ),
+                          IconButton(
+                            tooltip: allUserList[personIndex].dbId != selfDbId
+                                ? "Remove this member"
+                                : "You cannot remove yourself",
+                            iconSize: 20,
+                            icon: Icon(Icons.clear),
+                            onPressed: allUserList[personIndex].dbId != selfDbId
+                                ? () {
+                                    Popup.twoOptionsPopup(
+                                      context,
+                                      message:
+                                          "${allUserList[personIndex].completeName} will NO LONGER BE a member of the team. All data related to him WILL BE DELETED. Changes need to be saved after.",
+                                      text1: "Bye bye",
+                                      color1: Colors.red,
+                                      onPressed1: () {
+                                        setStateBuilder(
+                                            () => allUserList.removeAt(personIndex));
+                                        Navigator.of(context).pop();
+                                      },
+                                    );
+                                  }
+                                : null,
+                          ),
+                        ],
+                      );
+                    } else {
+                      personIndex -= allUserList.length;
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(addList[personIndex].email,
+                                  style: TextStyle(fontWeight: FontWeight.bold)),
+                              Text(
+                                addList[personIndex].completeName,
+                                style: TextStyle(
+                                  color: Colors.grey[600],
+                                  fontSize: 10,
+                                ),
+                              ),
+                            ],
+                          ),
+                          IconButton(
+                            tooltip: "Remove this member",
+                            iconSize: 15,
+                            icon: Icon(Icons.clear),
+                            onPressed: () {
+                              setStateBuilder(() => addList.removeAt(personIndex));
+                            },
+                          ),
+                        ],
+                      );
+                    }
+                  },
+                ),
+              ),
+              Divider(thickness: 1.5),
+              // TEXT INPUT
+              Center(child: FlatIconButton(onPressed: newMember)),
+              // BOTTOM BUTTONS
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  Text(
-                    "  Team Members:",
-                    style: TextStyle(
-                      color: Colors.grey[600],
-                      fontWeight: FontWeight.bold,
-                      fontSize: 12,
+                  TextButton(
+                    onPressed: () async {
+                      Navigator.of(context).pop();
+                      await saveChanges();
+                    },
+                    child: Text(
+                      "Save",
                     ),
                   ),
-                  Divider(thickness: 1.5),
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 7),
-                    height: 250,
-                    child: ListView.separated(
-                      separatorBuilder: (context, personIndex) {
-                        return Divider(
-                          thickness: 1,
-                        );
-                      },
-                      itemCount: allUserList.length + addList.length,
-                      itemBuilder: (context, personIndex) {
-                        if (personIndex < allUserList.length) {
-                          return Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(allUserList[personIndex].email),
-                                  Text(
-                                    allUserList[personIndex].completeName,
-                                    style: TextStyle(
-                                      color: Colors.grey[600],
-                                      fontSize: 10,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              IconButton(
-                                tooltip: allUserList[personIndex].dbId != selfDbId
-                                    ? "Remove this member"
-                                    : "You cannot remove yourself",
-                                iconSize: 20,
-                                icon: Icon(Icons.clear),
-                                onPressed: allUserList[personIndex].dbId != selfDbId
-                                    ? () {
-                                        Popup.twoOptionsPopup(
-                                          context,
-                                          message:
-                                              "${allUserList[personIndex].completeName} will NO LONGER BE a member of the team. All data related to him WILL BE DELETED. Changes need to be saved after.",
-                                          text1: "Accept",
-                                          onPressed1: () {
-                                            setStateBuilder(
-                                                () => allUserList.removeAt(personIndex));
-                                            Navigator.of(context).pop();
-                                          },
-                                        );
-                                      }
-                                    : null,
-                              ),
-                            ],
-                          );
-                        } else {
-                          personIndex -= allUserList.length;
-                          return Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(addList[personIndex].email,
-                                      style: TextStyle(fontWeight: FontWeight.bold)),
-                                  Text(
-                                    addList[personIndex].completeName,
-                                    style: TextStyle(
-                                      color: Colors.grey[600],
-                                      fontSize: 10,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              IconButton(
-                                tooltip: "Remove this member",
-                                iconSize: 15,
-                                icon: Icon(Icons.clear),
-                                onPressed: () {
-                                  setStateBuilder(() => addList.removeAt(personIndex));
-                                },
-                              ),
-                            ],
-                          );
-                        }
-                      },
+                  TextButton(
+                    onPressed: Navigator.of(context).pop,
+                    child: Text(
+                      "Cancel",
+                      style: TextStyle(color: Colors.grey[800]),
                     ),
-                  ),
-                  Divider(thickness: 1.5),
-                  // TEXT INPUT
-                  Center(child: FlatIconButton(onPressed: newMember)),
-                  // BOTTOM BUTTONS
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      TextButton(
-                        onPressed: () async {
-                          Navigator.of(context).pop();
-                          await saveChanges();
-                        },
-                        child: Text(
-                          "Save",
-                        ),
-                      ),
-                      TextButton(
-                        onPressed: Navigator.of(context).pop,
-                        child: Text(
-                          "Cancel",
-                          style: TextStyle(color: Colors.grey[800]),
-                        ),
-                      ),
-                    ],
                   ),
                 ],
               ),
@@ -225,9 +222,9 @@ class _ScreenTeamState extends State<ScreenTeam> {
                       tooltip: "Manage Team",
                       icon: Icon(Icons.edit),
                       onSelected: (value) async {
-                        if (value == TeamScreenEdit.ManageAccess)
+                        if (value == TeamScreenEdit.manageAccess)
                           _editTeam(access: true);
-                        else if (value == TeamScreenEdit.ManageSections) print("manage sections");
+                        else if (value == TeamScreenEdit.manageSections) print("manage sections");
                       },
                       itemBuilder: (_) {
                         return TeamScreenEdit.choices
@@ -241,9 +238,9 @@ class _ScreenTeamState extends State<ScreenTeam> {
                   ),
                   PopupMenuButton<String>(
                     onSelected: (value) async {
-                      if (value == TeamScreenPopupMenu.Config)
+                      if (value == TeamScreenPopupMenu.config)
                         print("obrir finestra de config.");
-                      else if (value == TeamScreenPopupMenu.Logout)
+                      else if (value == TeamScreenPopupMenu.logout)
                         await Provider.of<SignInProvider>(context, listen: false).logout();
                     },
                     itemBuilder: (_) {

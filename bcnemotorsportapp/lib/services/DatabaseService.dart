@@ -1,7 +1,5 @@
-import 'package:bcnemotorsportapp/models/AllData.dart';
 import 'package:bcnemotorsportapp/models/utilsAndErrors.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class DatabaseService {
@@ -21,6 +19,10 @@ class DatabaseService {
 
   // ########## STREAMS ##########
 
+  static Stream<QuerySnapshot> versionStream() {
+    return FirebaseFirestore.instance.collection('version').limit(1).snapshots();
+  }
+
   static Stream<QuerySnapshot> dbIdStream(String email) {
     return FirebaseFirestore.instance.collection('whitelist').where('email', isEqualTo: email).limit(1).snapshots();
   }
@@ -37,9 +39,22 @@ class DatabaseService {
     return FirebaseFirestore.instance.collection('sections').orderBy('name').snapshots();
   }
 
-  static Stream<QuerySnapshot> calendarStream(List<String> sectionIds) {
-    return FirebaseFirestore.instance.collection('calendar').where('sectionIds', arrayContainsAny: sectionIds).snapshots();
+  static Stream<QuerySnapshot> calendarStream({@required bool global, bool isTeamLeader = false, List<String> sectionIds = const []}) {
+    if (global) return FirebaseFirestore.instance.collection('calendar').where('global', isEqualTo: true).snapshots();
+    else {
+      if (isTeamLeader) return FirebaseFirestore.instance.collection('calendar').where('global', isEqualTo: false).snapshots();
+      else return FirebaseFirestore.instance.collection('calendar').where('sectionId', whereIn: sectionIds).snapshots();
+    }
   }
+
+  static Stream<QuerySnapshot> announcementsStream({@required bool global, bool isTeamLeader = false, List<String> sectionIds = const []}) {
+    if (global) return FirebaseFirestore.instance.collection('announcements').where('global', isEqualTo: true).snapshots();
+    else {
+      if (isTeamLeader) return FirebaseFirestore.instance.collection('announcements').where('global', isEqualTo: false).snapshots();
+      else return FirebaseFirestore.instance.collection('announcements').where('sectionId', whereIn: sectionIds).snapshots();
+    }
+  }
+
 
   // ########## UPDATES ##########
 
@@ -87,5 +102,26 @@ class DatabaseService {
       // TODO
     }
     return newDbIds;
+  }
+
+
+  // ########## NEW ##########
+
+  static Future<String> newEvent(Map<String, dynamic> event) async {
+    return (await FirebaseFirestore.instance.collection('calendar').add(event)).id;
+  }
+
+  static Future<String> newAnnouncement(Map<String, dynamic> announcement) async {
+    return (await FirebaseFirestore.instance.collection('announcements').add(announcement)).id;
+  }
+
+
+  // ########## DELETE ##########
+  static Future<void> deleteEvent(String eventId) async {
+    await FirebaseFirestore.instance.collection('calendar').doc(eventId).delete();
+  }
+
+  static Future<void> deleteAnnouncement(String announcementId) async {
+    await FirebaseFirestore.instance.collection('announcements').doc(announcementId).delete();
   }
 }

@@ -9,7 +9,7 @@ class ImageContainer extends StatelessWidget {
   final void Function() onTap;
   final Widget placeholder;
 
-  ImageContainer(
+  const ImageContainer(
       {this.circular = true,
       this.image,
       this.size = 50,

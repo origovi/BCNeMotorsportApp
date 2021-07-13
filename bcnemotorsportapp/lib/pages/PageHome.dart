@@ -5,6 +5,8 @@ import 'package:bcnemotorsportapp/screens/ScreenCalendar.dart';
 import 'package:bcnemotorsportapp/screens/ScreenTeam.dart';
 import 'package:bcnemotorsportapp/screens/ScreenToDo.dart';
 import 'package:bcnemotorsportapp/screens/ScreenTesting.dart';
+import 'package:bcnemotorsportapp/services/MessagingService.dart';
+import 'package:bcnemotorsportapp/services/OneSignalService.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -21,10 +23,15 @@ class _PageHomeState extends State<PageHome> {
   void initState() {
     super.initState();
     _currentSubsection = 0;
+    Provider.of<CloudDataProvider>(context, listen: false).setContext(context);
+    MessagingService.homeInitialization(
+        context, Provider.of<CloudDataProvider>(context, listen: false).user.memberSectionIds);
+    //OneSignalService.homeInitialization();
   }
 
   @override
   Widget build(BuildContext context) {
+    changeSystemUi(navBarColor: Colors.grey[50]);
     List<Widget> sections = [ScreenCalendar(), ScreenToDo(), ScreenTesting(), ScreenTeam()];
     //final user = Provider.of<User>(context);
     // if (user != null && user.emailVerified)
@@ -49,11 +56,11 @@ class _PageHomeState extends State<PageHome> {
           ),
           BottomNavigationBarItem(
             label: "To Do",
-            icon: Icon(Icons.check_box)
+            icon: Icon(Icons.task_alt), // task_alt, check_box
           ),
           BottomNavigationBarItem(
             label: "Testing",
-            icon: Icon(Icons.car_repair)
+            icon: Icon(Icons.rv_hookup), // directions_car, rv_hookup, sports_motorsports
           ),
           BottomNavigationBarItem(
             label: "Team",
@@ -63,10 +70,7 @@ class _PageHomeState extends State<PageHome> {
         ],
       ),
       //body: Subsection(_currentSubsection),
-      body: RefreshIndicator(
-        child: sections[_currentSubsection],
-        onRefresh: Provider.of<CloudDataProvider>(context, listen: false).refreshData,
-      ),
+      body: sections[_currentSubsection],
     );
   }
 }

@@ -6,7 +6,7 @@ class PageDisplayItem extends StatelessWidget {
   final String heroTag;
   final List<Widget> actions;
 
-  PageDisplayItem(this.child, {this.title, this.heroTag, this.actions});
+  const PageDisplayItem(this.child, {this.title, this.heroTag, this.actions});
 
   @override
   Widget build(BuildContext context) {

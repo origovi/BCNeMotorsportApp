@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-class ToDo extends StatefulWidget {
+class ToDoWidget extends StatefulWidget {
   @override
-  _ToDoState createState() => _ToDoState();
+  _ToDoWidgetState createState() => _ToDoWidgetState();
 }
 
-class _ToDoState extends State<ToDo> {
+class _ToDoWidgetState extends State<ToDoWidget> {
   @override
   Widget build(BuildContext context) {
     return Column(

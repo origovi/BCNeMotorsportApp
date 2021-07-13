@@ -1,5 +1,5 @@
 import 'package:bcnemotorsportapp/Constants.dart';
-import 'package:bcnemotorsportapp/models/PopupMenu.dart';
+import 'package:bcnemotorsportapp/models/popupMenu.dart';
 import 'package:bcnemotorsportapp/models/team/Person.dart';
 import 'package:bcnemotorsportapp/models/utilsAndErrors.dart';
 import 'package:bcnemotorsportapp/providers/CloudDataProvider.dart';
@@ -174,7 +174,7 @@ class _PageNewMemberState extends State<PageNewMember> {
                           "Is TL? *",
                           style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
                         ),
-                        value: YesNo.No,
+                        value: YesNo.no,
                         decoration: InputDecoration(filled: true),
                         //onTap: FocusScope.of(context).requestFocus,
                         onChanged: (value) {},
@@ -185,7 +185,7 @@ class _PageNewMemberState extends State<PageNewMember> {
                           if (value == null) {
                             return "Please select";
                           } else {
-                            isTl = (value == YesNo.Yes);
+                            isTl = (value == YesNo.yes);
                             return null;
                           }
                         },

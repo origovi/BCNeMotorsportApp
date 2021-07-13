@@ -1,29 +1,10 @@
 import 'dart:math';
 
+import 'package:bcnemotorsportapp/Constants.dart';
+import 'package:bcnemotorsportapp/pages/PageError.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
-
-class PageError extends StatelessWidget {
-  final String _errorMessage;
-
-  PageError([this._errorMessage = "Unexpected error"]);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Error"),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10),
-        child: Center(
-          child: Text("Error: $_errorMessage"),
-        ),
-      ),
-    );
-  }
-}
 
 // To be able to call this function with a code error
 void errorScreen(BuildContext context, [String errorMessage]) {
@@ -87,18 +68,21 @@ class Popup {
       {@required BuildContext context,
       @required List<Widget> children,
       CrossAxisAlignment columnCrossAlignment = CrossAxisAlignment.center,
-      bool barrierDismissible = true}) {
+      bool barrierDismissible = true,
+      bool symmetricMargin = false,
+      bool symmetricPadding = false}) {
     return showDialog(
       context: context,
       builder: (context) {
         return Padding(
-          padding: EdgeInsets.only(left: 25, right: 25, bottom: 150),
+          padding: EdgeInsets.only(left: 25, right: 25, bottom: symmetricMargin ? 0 : 150),
           child: Center(
             child: Material(
               borderRadius: BorderRadius.circular(30),
               color: Colors.white,
               child: Padding(
-                padding: EdgeInsets.only(top: 20, left: 20, right: 20, bottom: 7),
+                padding:
+                    EdgeInsets.only(top: symmetricPadding ? 7 : 20, left: 20, right: 20, bottom: 7),
                 child: Column(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: columnCrossAlignment,
@@ -116,7 +100,9 @@ class Popup {
       {String title = "Warning",
       String message = "Unexpected error",
       String text1 = "Yes",
+      Color color1,
       String text2 = "Cancel",
+      bool barrierDismissible = true,
       @required void Function() onPressed1,
       void Function() onPressed2}) {
     showDialog(
@@ -128,6 +114,7 @@ class Popup {
           FlatButton(
             onPressed: onPressed1,
             child: Text(text1),
+            color: color1,
           ),
           FlatButton(
             onPressed: onPressed2 ?? Navigator.of(context).pop,
@@ -135,7 +122,7 @@ class Popup {
           )
         ],
       ),
-      barrierDismissible: false,
+      barrierDismissible: barrierDismissible,
     );
   }
 }
@@ -185,6 +172,25 @@ class Functions {
         Iterable.generate(length, (_) => _chars.codeUnitAt(_rnd.nextInt(_chars.length))));
   }
 }
+
+Future<void> changeSystemUi(
+    {Color navBarColor,
+    Color statusBarColor,
+    Brightness statusBarBrightness,
+    int milliDelay = 50}) async {
+  await Future.delayed(Duration(milliseconds: milliDelay));
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+    statusBarIconBrightness: statusBarBrightness,
+    statusBarColor: statusBarColor,
+    systemNavigationBarDividerColor: navBarColor,
+    systemNavigationBarColor: navBarColor,
+  ));
+}
+
+SystemUiOverlayStyle uiStyleByColor(Color navColor) => SystemUiOverlayStyle(
+      systemNavigationBarDividerColor: navColor,
+      systemNavigationBarColor: navColor,
+    );
 
 Future<PickedFile> pickGalleryImage() async {
   try {
@@ -251,6 +257,78 @@ String formatDateTime(DateTime d) {
   else
     s = "${d.month}-${d.day}-${d.year}";
   return s;
+}
+
+String formatEventDates(DateTime t1, DateTime t2, bool allDay) {
+  bool showYear = t1.year != t2.year;
+  String t1Format = formatEventDate(t1, year: showYear);
+  String t2Format = formatEventDate(t2, year: showYear);
+
+  String res = t1Format;
+  // Intradia
+  if (t1Format == t2Format) {
+    if (!allDay) {
+      res += "  ·  " + formatEventTime(t1) + "  -  " + formatEventTime(t2);
+    }
+  } else {
+    if (!allDay) {
+      res += "  ·  " +
+          formatEventTime(t1) +
+          "  -\n" +
+          formatEventDate(t2, year: showYear) +
+          "  ·  " +
+          formatEventTime(t2);
+    } else {
+      res += "  -  " + formatEventDate(t2, year: showYear);
+    }
+  }
+  return res;
+}
+
+String formatEventDate(DateTime t, {bool short = false, bool year = true, bool month = true}) {
+  String res = "";
+  if (short) {
+    res += Dates.daysShort[t.weekday - 1] + ", ";
+    res += t.day.toString();
+    if (month) res += " " + Dates.monthsShort[t.month - 1].toLowerCase();
+  } else {
+    res += Dates.days[t.weekday - 1] + ", ";
+    res += t.day.toString();
+    if (month) res += " " + Dates.months[t.month - 1].toLowerCase();
+  }
+  if (year) res += ", " + t.year.toString();
+  return res;
+}
+
+String formatEventTime(DateTime t) {
+  String res = "";
+  if (t.hour < 10) res += "0";
+  res += t.hour.toString() + ":";
+  if (t.minute < 10) res += "0";
+  res += t.minute.toString();
+  return res;
+}
+
+Future<DateTime> pickDate(BuildContext context, DateTime initialDate,
+    {DateTime firstDate, DateTime lastDate}) async {
+  DateTime aux = await showDatePicker(
+    context: context,
+    initialDate: initialDate,
+    firstDate: firstDate ?? DateTime.now().subtract(Duration(days: 730)),
+    lastDate: lastDate ?? DateTime.now().add(Duration(days: 548)),
+    locale: const Locale('en', 'GB'),
+  );
+  if (aux == null) return initialDate;
+  return DateTime(aux.year, aux.month, aux.day, initialDate.hour, initialDate.minute);
+}
+
+Future<DateTime> pickTime(BuildContext context, DateTime initialDate) async {
+  TimeOfDay aux = await showTimePicker(
+    context: context,
+    initialTime: TimeOfDay.fromDateTime(initialDate),
+  );
+  if (aux == null) return initialDate;
+  return DateTime(initialDate.year, initialDate.month, initialDate.day, aux.hour, aux.minute);
 }
 
 class Pair<T, Y> {

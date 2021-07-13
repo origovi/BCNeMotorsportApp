@@ -1,14 +1,14 @@
 import 'package:bcnemotorsportapp/Constants.dart';
-import 'package:bcnemotorsportapp/models/toDo/ToDoData.dart';
-import 'package:bcnemotorsportapp/widgets/toDo/ToDo.dart';
+import 'package:bcnemotorsportapp/models/toDo/ToDo.dart';
+import 'package:bcnemotorsportapp/widgets/toDo/ToDoWidget.dart';
 import 'package:flutter/material.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 class ToDoSection extends StatelessWidget {
   final String sectionTitle;
-  final List<ToDoData> toDoDataList;
+  final List<ToDo> toDoDataList;
 
-  ToDoSection(this.sectionTitle, this.toDoDataList);
+  const ToDoSection(this.sectionTitle, this.toDoDataList);
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +19,7 @@ class ToDoSection extends StatelessWidget {
         SliverList(
           delegate: SliverChildBuilderDelegate(
             (context, i) {
-              return ToDo();
+              return ToDoWidget();
             },
             childCount: 10,
           ),
@@ -32,7 +32,7 @@ class ToDoSection extends StatelessWidget {
 class FloatingSeparator extends StatelessWidget {
   final String text;
 
-  FloatingSeparator(this.text);
+  const FloatingSeparator(this.text);
 
   @override
   Widget build(BuildContext context) {

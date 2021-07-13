@@ -10,7 +10,7 @@ class SectionGrid extends StatelessWidget {
   final ScrollController _controller;
   final EdgeInsets _padding;
 
-  SectionGrid(
+  const SectionGrid(
       {@required SectionsData data,
       List<String> desiredSections,
       bool shrinkWrap = false,

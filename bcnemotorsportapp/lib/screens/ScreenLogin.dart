@@ -8,7 +8,7 @@ import 'package:provider/provider.dart';
 
 class ScreenLogin extends StatelessWidget {
   final bool loading;
-  ScreenLogin({@required this.loading});
+  const ScreenLogin({@required this.loading});
 
   @override
   Widget build(BuildContext context) {

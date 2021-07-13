@@ -23,16 +23,23 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
   cached_network_image: ^3.0.0
   cloud_firestore: ^1.0.6
   cupertino_icons: ^1.0.2
   data_connection_checker: ^0.3.4
   firebase_auth: ^1.1.1
   firebase_core: ^1.0.4
+  firebase_messaging: ^10.0.3
   firebase_storage: ^8.0.5
+  flutter_displaymode: ^0.3.2
+  flutter_local_notifications: ^6.0.0
   font_awesome_flutter: ^9.0.0
   google_sign_in: ^5.0.2
+  http: ^0.13.3
   image_picker: ^0.7.4
+  onesignal_flutter: ^3.0.0
   provider: ^5.0.0
   sliver_tools: ^0.2.1
   syncfusion_flutter_calendar: ^19.1.64

@@ -22,4 +22,18 @@ class Phrases {
   static const String intruderTitle = "Oops...";
   static const String intruderMessage =
       "You do not have access to this application. If you think this is an error, please contact your friendliest TL. If you are from another team we wish you the best to the competitions.";
+  static const String invalidAppVersion = "It seems that there is a new version of this app. Please update it.";
+  static const String noInternetConnection = "It seems you have lost your internet connection. Eduroam not working? LOL";
+}
+
+class Sizes {
+  static const double sideMargin = 10;
+}
+
+class Dates {
+  static const List<String> days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+  static const List<String> daysShort = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+
+  static const List<String> months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "Desember"];
+  static const List<String> monthsShort = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Des"];
 }

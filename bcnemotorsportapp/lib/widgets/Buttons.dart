@@ -9,7 +9,7 @@ class FlatIconButton extends StatelessWidget {
   final Widget icon;
   final bool border;
 
-  FlatIconButton({@required this.onPressed, this.text = "Add", this.icon = const Icon(Icons.add), this.border = false});
+  const FlatIconButton({@required this.onPressed, this.text = "Add", this.icon = const Icon(Icons.add), this.border = false});
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +41,7 @@ class ElevatedTextButton extends StatelessWidget {
   final String text;
   final bool isTeamColor;
 
-  ElevatedTextButton({@required this.onTap, this.text = "Add", this.isTeamColor = true});
+  const ElevatedTextButton({@required this.onTap, this.text = "Add", this.isTeamColor = true});
 
   @override
   Widget build(BuildContext context) {

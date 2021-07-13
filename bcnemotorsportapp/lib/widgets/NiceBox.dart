@@ -11,7 +11,7 @@ class NiceBox extends StatelessWidget {
   final bool topCircular;
   final bool bottomCircular;
 
-  NiceBox({
+  const NiceBox({
     this.child,
     this.radius = 10,
     this.onTap,

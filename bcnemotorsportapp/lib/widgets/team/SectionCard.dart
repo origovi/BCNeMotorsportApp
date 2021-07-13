@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 class SectionCard extends StatelessWidget {
   final Section data;
 
-  SectionCard(this.data);
+  const SectionCard(this.data);
 
   @override
   Widget build(BuildContext context) {

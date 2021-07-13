@@ -1,33 +1,40 @@
 import 'package:bcnemotorsportapp/models/AllData.dart';
+import 'package:bcnemotorsportapp/models/calendar/Announcement.dart';
 import 'package:bcnemotorsportapp/models/calendar/CalendarData.dart';
+import 'package:bcnemotorsportapp/models/calendar/Event.dart';
 import 'package:bcnemotorsportapp/models/team/Person.dart';
 import 'package:bcnemotorsportapp/models/team/Section.dart';
 import 'package:bcnemotorsportapp/models/team/SectionsData.dart';
 import 'package:bcnemotorsportapp/models/toDo/ToDoData.dart';
+import 'package:bcnemotorsportapp/models/toDo/ToDo.dart';
 import 'package:bcnemotorsportapp/models/utilsAndErrors.dart';
 import 'package:bcnemotorsportapp/services/DatabaseService.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class CloudDataProvider extends ChangeNotifier {
-  final BuildContext _context;
+  BuildContext _context;
   AllData _data;
   User _user;
   String _dbId;
 
-  CloudDataProvider(this._context);
+  CloudDataProvider();
 
-  void init(bool first, {@required AllData data, @required User user, @required String dbId}) {
+  void init({@required AllData data, @required User user, @required String dbId}) {
     this._data = data;
     this._user = user;
     this._dbId = dbId;
     //notifyListeners();
   }
 
+  void setContext(BuildContext context) => _context = context;
+
   // GETTERS
+  BuildContext get context => _context;
+  bool get allDataNull => _data == null;
   SectionsData get sectionsData => _data.sectionsData;
   CalendarData get calendarData => _data.calendarData;
+  ToDoData get toDoAllData => _data.toDoAllData;
   String get dbUId => _dbId;
   bool get isTeamLeader => personById(_dbId).isTeamLeader;
   bool get isChief => personById(_dbId).chiefSectionIds.isNotEmpty;
@@ -49,27 +56,11 @@ class CloudDataProvider extends ChangeNotifier {
 
   Person get user => personById(dbUId);
 
-  // returns the data necessary to build the ToDo page
-  ToDoData getToDoData() {
-    return ToDoData();
-  }
-
-  // returns the data necessary to build the calendar page
-  CalendarData getCalendarData() {
-    return null;
-  }
-
-  SectionsData newSectionsData(QuerySnapshot newSectionsData) {
-    _data.newSectionsData(newSectionsData);
-    print("NEW SECTIONS DATA");
-    return _data.sectionsData;
-  }
-
-  CalendarData newCalendarData(QuerySnapshot newCalendarData) {
-    _data.newCalendarData(newCalendarData);
-    print("NEW CALENDAR DATA");
-    return _data.calendarData;
-  }
+  List<Section> get allSections => sectionsData.dataList;
+  List<Section> get userSections =>
+      user.memberSectionIds.map((e) => _data.sectionsData.sectionById(e)).toList();
+  List<Section> get userChiefSections =>
+      user.chiefSectionIds.map((e) => _data.sectionsData.sectionById(e)).toList();
 
   // UPDATES
   Future<void> updateSectionAbout(String sectionId, String newAbout) async {
@@ -150,14 +141,14 @@ class CloudDataProvider extends ChangeNotifier {
     removePersonList.forEach((personToBeRemoved) {
       //   dbId,     user sections
       List<Map<String, dynamic>> thisPersonSections = [];
-      
+
       // iterate the sections where he is only member
       personToBeRemoved.onlyMemberSectionIds.forEach((onlyMemberSectionId) {
         Map<String, dynamic> sectionInfo = {};
         sectionInfo['sectionId'] = onlyMemberSectionId;
         List<String> memberIds = sectionById(onlyMemberSectionId).memberIds;
         // remove the member from the list
-        memberIds.removeWhere((element) => element==personToBeRemoved.dbId);
+        memberIds.removeWhere((element) => element == personToBeRemoved.dbId);
         sectionInfo['members'] = memberIds;
         thisPersonSections.add(sectionInfo);
       });
@@ -168,12 +159,12 @@ class CloudDataProvider extends ChangeNotifier {
         sectionInfo['sectionId'] = chiefSectionId;
         List<String> chiefIds = sectionById(chiefSectionId).chiefIds;
         // remove the chief from the list
-        chiefIds.removeWhere((element) => element==personToBeRemoved.dbId);
+        chiefIds.removeWhere((element) => element == personToBeRemoved.dbId);
         sectionInfo['chiefs'] = chiefIds;
 
         List<String> memberIds = sectionById(chiefSectionId).memberIds;
         // remove the member from the list
-        memberIds.removeWhere((element) => element==personToBeRemoved.dbId);
+        memberIds.removeWhere((element) => element == personToBeRemoved.dbId);
         sectionInfo['members'] = memberIds;
         thisPersonSections.add(sectionInfo);
       });
@@ -190,7 +181,32 @@ class CloudDataProvider extends ChangeNotifier {
       addPersonList[i].setDbId(newIds[i]);
       _data.personsData.data[newIds[i]] = addPersonList[i];
     }
-    
+  }
+
+  // ADD NEW
+  Future<String> newEvent(Event newEvent) async {
+    String newEventId = await DatabaseService.newEvent(newEvent.toRaw());
+    newEvent.addId(newEventId);
+    calendarData.addEvent(newEvent);
+    return newEventId;
+  }
+
+  Future<String> newAnnouncement(Announcement newAnnouncement) async {
+    String newAnnouncementId = await DatabaseService.newAnnouncement(newAnnouncement.toRaw());
+    newAnnouncement.addId(newAnnouncementId);
+    calendarData.addAnnouncement(newAnnouncement);
+    return newAnnouncementId;
+  }
+
+  // DELETE
+  Future<void> deleteEvent(String eventId) async {
+    calendarData.deleteEvent(eventId);
+    await DatabaseService.deleteEvent(eventId);
+  }
+
+  Future<void> deleteAnnouncement(String announcementId) async {
+    calendarData.deleteAnnouncement(announcementId);
+    await DatabaseService.deleteAnnouncement(announcementId);
   }
 
   // OTHERS

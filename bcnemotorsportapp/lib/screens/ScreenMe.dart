@@ -1,3 +1,4 @@
+import 'package:bcnemotorsportapp/Constants.dart';
 import 'package:bcnemotorsportapp/models/team/Person.dart';
 import 'package:bcnemotorsportapp/models/utilsAndErrors.dart';
 import 'package:bcnemotorsportapp/providers/CloudDataProvider.dart';
@@ -71,7 +72,7 @@ class _ScreenMeState extends State<ScreenMe> {
       // used to deselect the about note when clicking outside
       onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
       child: ListView(
-        padding: EdgeInsets.only(top: 10, right: 10, left: 10),
+        padding: EdgeInsets.only(top: Sizes.sideMargin, right: Sizes.sideMargin, left: Sizes.sideMargin),
         children: [
           NiceBox(
             child: Column(

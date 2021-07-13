@@ -1,4 +1,4 @@
-import 'package:bcnemotorsportapp/models/PopupMenu.dart';
+import 'package:bcnemotorsportapp/models/popupMenu.dart';
 import 'package:bcnemotorsportapp/models/team/Person.dart';
 import 'package:bcnemotorsportapp/models/utilsAndErrors.dart';
 import 'package:bcnemotorsportapp/providers/CloudDataProvider.dart';
@@ -133,9 +133,9 @@ class _MemberTileState extends State<MemberTile> {
                   ))
               .toList(),
     ).then((value) {
-      if (value == TeamScreenMemberTilePopupMenu.SendEmail) {
+      if (value == TeamScreenMemberTilePopupMenu.sendEmail) {
         sendMail();
-      } else if (value == TeamScreenMemberTilePopupMenu.ChangeRole) {
+      } else if (value == TeamScreenMemberTilePopupMenu.changeRole) {
         changeRole();
       }
     });
