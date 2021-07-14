@@ -1,3 +1,4 @@
+import 'package:bcnemotorsportapp/Constants.dart';
 import 'package:bcnemotorsportapp/models/popupMenu.dart';
 import 'package:bcnemotorsportapp/models/team/Person.dart';
 import 'package:bcnemotorsportapp/models/utilsAndErrors.dart';
@@ -125,8 +126,7 @@ class _ScreenTeamState extends State<ScreenTeam> {
                                       text1: "Bye bye",
                                       color1: Colors.red,
                                       onPressed1: () {
-                                        setStateBuilder(
-                                            () => allUserList.removeAt(personIndex));
+                                        setStateBuilder(() => allUserList.removeAt(personIndex));
                                         Navigator.of(context).pop();
                                       },
                                     );
@@ -210,41 +210,24 @@ class _ScreenTeamState extends State<ScreenTeam> {
         headerSliverBuilder: (context, innerBoxScrolled) {
           return [
             SliverAppBar(
-                brightness: Brightness.dark,
-                title: Text("Our team"),
-                floating: true,
-                pinned: true,
-                forceElevated: innerBoxScrolled,
-                actions: [
-                  Visibility(
-                    visible: Provider.of<CloudDataProvider>(context, listen: false).isTeamLeader,
-                    child: PopupMenuButton<String>(
-                      tooltip: "Manage Team",
-                      icon: Icon(Icons.edit),
-                      onSelected: (value) async {
-                        if (value == TeamScreenEdit.manageAccess)
-                          _editTeam(access: true);
-                        else if (value == TeamScreenEdit.manageSections) print("manage sections");
-                      },
-                      itemBuilder: (_) {
-                        return TeamScreenEdit.choices
-                            .map((String choice) => PopupMenuItem<String>(
-                                  value: choice,
-                                  child: Text(choice),
-                                ))
-                            .toList();
-                      },
-                    ),
-                  ),
-                  PopupMenuButton<String>(
+              brightness: Brightness.dark,
+              title: Text("Our team"),
+              floating: true,
+              pinned: true,
+              forceElevated: innerBoxScrolled,
+              actions: [
+                Visibility(
+                  visible: Provider.of<CloudDataProvider>(context, listen: false).isTeamLeader,
+                  child: PopupMenuButton<String>(
+                    tooltip: "Manage Team",
+                    icon: Icon(Icons.edit),
                     onSelected: (value) async {
-                      if (value == TeamScreenPopupMenu.config)
-                        print("obrir finestra de config.");
-                      else if (value == TeamScreenPopupMenu.logout)
-                        await Provider.of<SignInProvider>(context, listen: false).logout();
+                      if (value == TeamScreenEdit.manageAccess)
+                        _editTeam(access: true);
+                      else if (value == TeamScreenEdit.manageSections) print("manage sections");
                     },
                     itemBuilder: (_) {
-                      return TeamScreenPopupMenu.choices
+                      return TeamScreenEdit.choices
                           .map((String choice) => PopupMenuItem<String>(
                                 value: choice,
                                 child: Text(choice),
@@ -252,24 +235,42 @@ class _ScreenTeamState extends State<ScreenTeam> {
                           .toList();
                     },
                   ),
+                ),
+                PopupMenuButton<String>(
+                  onSelected: (value) async {
+                    if (value == TeamScreenPopupMenu.config)
+                      print("obrir finestra de config.");
+                    else if (value == TeamScreenPopupMenu.logout)
+                      await Provider.of<SignInProvider>(context, listen: false).logout();
+                  },
+                  itemBuilder: (_) {
+                    return TeamScreenPopupMenu.choices
+                        .map((String choice) => PopupMenuItem<String>(
+                              value: choice,
+                              child: Text(choice),
+                            ))
+                        .toList();
+                  },
+                ),
+              ],
+              bottom: TabBar(
+                indicatorColor: Colors.white,
+                tabs: [
+                  Tab(
+                    icon: Icon(Icons.list),
+                  ),
+                  Tab(
+                    icon: Icon(Icons.account_circle),
+                  ),
                 ],
-                bottom: TabBar(
-                  indicatorColor: Colors.white,
-                  tabs: [
-                    Tab(
-                      icon: Icon(Icons.list),
-                    ),
-                    Tab(
-                      icon: Icon(Icons.account_circle),
-                    ),
-                  ],
-                ))
+              ),
+            ),
           ];
         },
         body: TabBarView(
           children: [
             ListView(
-              padding: const EdgeInsets.all(10),
+              padding: const EdgeInsets.all(Sizes.sideMargin),
               children: [
                 SectionGrid(
                   data: Provider.of<CloudDataProvider>(context, listen: false).sectionsData,

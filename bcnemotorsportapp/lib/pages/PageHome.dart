@@ -37,6 +37,7 @@ class _PageHomeState extends State<PageHome> {
     // if (user != null && user.emailVerified)
     //   Provider.of<DebtsStatus>(context, listen: false).signIn(user);
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       //backgroundColor: Colors.white,
       //floatingActionButton: FloatingButtonPers(position: _currentSubsection),
       bottomNavigationBar: BottomNavigationBar(
@@ -56,7 +57,7 @@ class _PageHomeState extends State<PageHome> {
           ),
           BottomNavigationBarItem(
             label: "To Do",
-            icon: Icon(Icons.task_alt), // task_alt, check_box
+            icon: Icon(Icons.task_alt), // task_alt, check_box, checklist_rtl
           ),
           BottomNavigationBarItem(
             label: "Testing",

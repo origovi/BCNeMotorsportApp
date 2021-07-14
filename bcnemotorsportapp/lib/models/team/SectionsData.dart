@@ -12,7 +12,6 @@ class SectionsData {
   factory SectionsData.fromDatabase(QuerySnapshot snapshot) {
     Map<String, Map<String, dynamic>> aux = {};
     snapshot.docs.forEach((element) => aux[element.id] = element.data());
-    print(aux);
     return new SectionsData.fromRaw(aux);
   }
 

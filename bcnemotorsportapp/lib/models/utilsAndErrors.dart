@@ -309,17 +309,17 @@ String formatEventTime(DateTime t) {
   return res;
 }
 
-Future<DateTime> pickDate(BuildContext context, DateTime initialDate,
-    {DateTime firstDate, DateTime lastDate}) async {
+Future<DateTime> pickDate(BuildContext context,
+    {DateTime initialDate, DateTime firstDate, DateTime lastDate}) async {
   DateTime aux = await showDatePicker(
     context: context,
-    initialDate: initialDate,
+    initialDate: initialDate ?? DateTime.now(),
     firstDate: firstDate ?? DateTime.now().subtract(Duration(days: 730)),
     lastDate: lastDate ?? DateTime.now().add(Duration(days: 548)),
     locale: const Locale('en', 'GB'),
   );
-  if (aux == null) return initialDate;
-  return DateTime(aux.year, aux.month, aux.day, initialDate.hour, initialDate.minute);
+  if (aux == null) return null;
+  else return DateTime(aux.year, aux.month, aux.day, initialDate.hour, initialDate.minute);
 }
 
 Future<DateTime> pickTime(BuildContext context, DateTime initialDate) async {

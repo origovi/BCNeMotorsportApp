@@ -277,7 +277,7 @@ class _PageNewAnnouncementState extends State<PageNewAnnouncement> {
             ),
             Center(
               child: Padding(
-                padding: EdgeInsets.only(top: 10, bottom: 30),
+                padding: EdgeInsets.only(top: 15, bottom: 30),
                 child: Ink(
                   decoration: BoxDecoration(
                     color: TeamColor.teamColor,

@@ -34,7 +34,7 @@ class CloudDataProvider extends ChangeNotifier {
   bool get allDataNull => _data == null;
   SectionsData get sectionsData => _data.sectionsData;
   CalendarData get calendarData => _data.calendarData;
-  ToDoData get toDoAllData => _data.toDoAllData;
+  ToDoData get toDoAllData => _data.toDoData;
   String get dbUId => _dbId;
   bool get isTeamLeader => personById(_dbId).isTeamLeader;
   bool get isChief => personById(_dbId).chiefSectionIds.isNotEmpty;

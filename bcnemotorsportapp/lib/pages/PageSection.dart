@@ -257,7 +257,7 @@ class _PageSectionState extends State<PageSection> {
               Positioned(
                 bottom: 100,
                 child: Visibility(
-                  visible: _newMemberController.text.isNotEmpty && possiblePersonList.isNotEmpty,
+                  visible: _newMemberController.text.trim().isNotEmpty && possiblePersonList.isNotEmpty,
                   child: Container(
                     width: 250,
                     height: 100,

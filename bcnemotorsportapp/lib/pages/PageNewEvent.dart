@@ -278,17 +278,20 @@ class _PageNewEventState extends State<PageNewEvent> {
                                           TextButton(
                                             child: Text(formatEventDate(fromDate)),
                                             onPressed: () async {
-                                              DateTime ret = await pickDate(context, fromDate);
-                                              if (ret.isAfter(toDate) ||
-                                                  ret.isAtSameMomentAs(toDate))
-                                                setState(() {
-                                                  fromDate = ret;
-                                                  toDate = ret.add(Duration(hours: 1));
-                                                });
-                                              else
-                                                setState(() {
-                                                  fromDate = ret;
-                                                });
+                                              DateTime ret =
+                                                  await pickDate(context, initialDate: fromDate);
+                                              if (ret != null) {
+                                                if (ret.isAfter(toDate) ||
+                                                    ret.isAtSameMomentAs(toDate))
+                                                  setState(() {
+                                                    fromDate = ret;
+                                                    toDate = ret.add(Duration(hours: 1));
+                                                  });
+                                                else
+                                                  setState(() {
+                                                    fromDate = ret;
+                                                  });
+                                              }
                                             },
                                             style: TextButton.styleFrom(
                                               padding: EdgeInsets.zero,
@@ -327,17 +330,20 @@ class _PageNewEventState extends State<PageNewEvent> {
                                           TextButton(
                                             child: Text(formatEventDate(toDate)),
                                             onPressed: () async {
-                                              DateTime ret = await pickDate(context, toDate);
-                                              if (ret.isBefore(fromDate) ||
-                                                  ret.isAtSameMomentAs(fromDate))
-                                                setState(() {
-                                                  toDate = ret;
-                                                  fromDate = ret.subtract(Duration(hours: 1));
-                                                });
-                                              else
-                                                setState(() {
-                                                  toDate = ret;
-                                                });
+                                              DateTime ret =
+                                                  await pickDate(context, initialDate: toDate);
+                                              if (ret != null) {
+                                                if (ret.isBefore(fromDate) ||
+                                                    ret.isAtSameMomentAs(fromDate))
+                                                  setState(() {
+                                                    toDate = ret;
+                                                    fromDate = ret.subtract(Duration(hours: 1));
+                                                  });
+                                                else
+                                                  setState(() {
+                                                    toDate = ret;
+                                                  });
+                                              }
                                             },
                                             style: TextButton.styleFrom(
                                               padding: EdgeInsets.zero,
@@ -445,7 +451,9 @@ class _PageNewEventState extends State<PageNewEvent> {
                             children: [
                               Padding(
                                 padding: const EdgeInsets.only(right: 25, left: 8),
-                                child: Icon(notifyUsers ? Icons.notifications_active : Icons.notifications, color: Colors.grey[600]),
+                                child: Icon(
+                                    notifyUsers ? Icons.notifications_active : Icons.notifications,
+                                    color: Colors.grey[600]),
                               ),
                               Text(
                                 "Notify users now?",
@@ -518,7 +526,7 @@ class _PageNewEventState extends State<PageNewEvent> {
             ),
             Center(
               child: Padding(
-                padding: EdgeInsets.only(top: 10, bottom: 30),
+                padding: EdgeInsets.only(top: 15, bottom: 30),
                 child: Ink(
                   decoration: BoxDecoration(
                     color: TeamColor.teamColor,

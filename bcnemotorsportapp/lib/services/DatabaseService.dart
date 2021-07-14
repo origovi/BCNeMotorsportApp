@@ -35,8 +35,8 @@ class DatabaseService {
     return FirebaseFirestore.instance.collection('users').orderBy('name').snapshots();
   }
 
-  static Stream<QuerySnapshot> toDoStream() {
-    return FirebaseFirestore.instance.collection('sections').orderBy('name').snapshots();
+  static Stream<QuerySnapshot> toDoStream(List<String> sectionCompanyIds) {
+    return FirebaseFirestore.instance.collection('todos').where('personIds', arrayContainsAny: sectionCompanyIds).snapshots();
   }
 
   static Stream<QuerySnapshot> calendarStream({@required bool global, bool isTeamLeader = false, List<String> sectionIds = const []}) {
@@ -113,6 +113,10 @@ class DatabaseService {
 
   static Future<String> newAnnouncement(Map<String, dynamic> announcement) async {
     return (await FirebaseFirestore.instance.collection('announcements').add(announcement)).id;
+  }
+
+  static Future<String> newToDo(Map<String, dynamic> toDo) async {
+    return (await FirebaseFirestore.instance.collection('todos').add(toDo)).id;
   }
 
 

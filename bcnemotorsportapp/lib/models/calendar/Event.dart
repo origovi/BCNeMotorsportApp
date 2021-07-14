@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class Event {
-  static const int _intensity = 400;
+  static const int _intensity = 300;
   static const int defColorIndex = 6;
   static List<Color> colorList = [
     Colors.red[_intensity],
