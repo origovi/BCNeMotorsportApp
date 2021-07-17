@@ -42,6 +42,7 @@ class Event {
   String _sectionId;
   bool _hasNote;
 
+  // CONSTRUCTORS
   Event(
       {String id = "",
       @required String name,
@@ -76,6 +77,7 @@ class Event {
     _hasNote = _note != null && _note.isNotEmpty;
   }
 
+  // GETTERS
   String get id => _id;
   String get name => _name;
   bool get allDay => _allDay;
@@ -87,6 +89,7 @@ class Event {
   DateTime get to => _to;
   String get sectionId => _sectionId;
 
+  // METHODS
   String get scheduleMessage {
     String res = "Scheduled ";
     final DateTime now = DateTime.now();

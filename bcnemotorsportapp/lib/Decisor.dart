@@ -64,6 +64,7 @@ class DecisorScreen extends StatelessWidget {
                                       return PageError(userSnapshot.error.toString());
                                     else if (dbIdSnapshot.hasData) {
                                       if (dbIdSnapshot.data.size >= 1) {
+                                        String dbUId = dbIdSnapshot.data.docs[0].id;
                                         // sections stream
                                         return StreamBuilder<QuerySnapshot>(
                                           stream: DatabaseService.sectionsStream(),
@@ -84,9 +85,9 @@ class DecisorScreen extends StatelessWidget {
                                                   else if (personsSnapshot.hasData) {
                                                     print("new persons data");
                                                     List<String> userSectionIds = [];
-                                                    personsSnapshot.data.docs.where((element) => element.data()['dbId'] == dbIdSnapshot.data.docs[0].id)
+                                                    personsSnapshot.data.docs.where((element) => element.data()['dbId'] == dbUId)
                                                         .toList().first.data()['sections'].forEach((key, value) => userSectionIds.add(key));
-                                                    bool isTeamLeader = personsSnapshot.data.docs.where((element) => element.data()['dbId'] == dbIdSnapshot.data.docs[0].id)
+                                                    bool isTeamLeader = personsSnapshot.data.docs.where((element) => element.data()['dbId'] == dbUId)
                                                             .toList().first.data()['teamLeader'];
                                                     
                                                     // calendar section stream
@@ -140,8 +141,8 @@ class DecisorScreen extends StatelessWidget {
                                                                             print("new announcements global data");
                                                                             
                                                                             // announcements global stream
-                                                                            // everybody's id who is a member of the sections i am member
-                                                                            List<String> sectionCompanyIds = [];
+                                                                            // everybody's id (and mine) who is a member of the sections i am member
+                                                                            List<String> sectionCompanyIds = [dbUId];
                                                                             for (var seccio in sectionsSnapshot.data.docs) {
                                                                               if (userSectionIds.contains(seccio.id)) {
                                                                                 sectionCompanyIds.addAll(List<String>.from(seccio.data()['members']));
@@ -164,32 +165,43 @@ class DecisorScreen extends StatelessWidget {
                                                                                     global = provider.calendarData.global;
                                                                                   }
                                                                                   provider.init(
-                                                                                    dbId: dbIdSnapshot.data.docs[0].id,
+                                                                                    dbId: dbUId,
                                                                                     data: AllData.fromDatabase(
-                                                                                      dbId: dbIdSnapshot.data.docs[0].id,
+                                                                                      dbId: dbUId,
                                                                                       sectionsData: sectionsSnapshot.data,
                                                                                       personsData: personsSnapshot.data,
                                                                                       eventData: calendarSectionSnapshot.data.docs + calendarGlobalSnapshot.data.docs,
                                                                                       announcementData: announcementsSectionSnapshot.data.docs + announcementsGlobalSnapshot.data.docs,
-                                                                                      toDoData: toDosSnapshot.data,
+                                                                                      toDoData: sectionCompanyIds.isEmpty ? null : toDosSnapshot.data,
                                                                                     ),
                                                                                     user: userSnapshot.data,
                                                                                   );
-                                                                                  // filter calendar as it was before
-                                                                                  if (global != null) {
-                                                                                    provider.calendarData.filterCalendar(
-                                                                                      global: global,
-                                                                                      sectionIds: selectedSectionIds,
-                                                                                    );
-                                                                                  }
-                                                                                  // filter calendar, all appointments permited
-                                                                                  else {
-                                                                                    provider.calendarData.filterCalendar(
-                                                                                      global: true,
-                                                                                      sectionIds: provider.user.memberSectionIds,
-                                                                                    );
-                                                                                  }
-                                                                                  return PageHome();
+                                                                                  // update (or set) user's fcm token
+                                                                                  return FutureBuilder(
+                                                                                    future: provider.updateUserFcmToken(),
+                                                                                    builder: (context, AsyncSnapshot updateUserFcmTokenSnapshot) {
+                                                                                      if (updateUserFcmTokenSnapshot.hasError)
+                                                                                        return PageError(updateUserFcmTokenSnapshot.error.toString());
+                                                                                      else if (updateUserFcmTokenSnapshot.hasData) {
+                                                                                        // filter calendar as it was before
+                                                                                        if (global != null) {
+                                                                                          provider.calendarData.filterCalendar(
+                                                                                            global: global,
+                                                                                            sectionIds: selectedSectionIds,
+                                                                                          );
+                                                                                        }
+                                                                                        // filter calendar, all appointments permited
+                                                                                        else {
+                                                                                          provider.calendarData.filterCalendar(
+                                                                                            global: true,
+                                                                                            sectionIds: provider.user.memberSectionIds,
+                                                                                          );
+                                                                                        }
+                                                                                        return PageHome();
+                                                                                      } else
+                                                                                        return screenLoginLoading;
+                                                                                    },
+                                                                                  );
                                                                                 } else
                                                                                   return screenLoginLoading;
                                                                               },

@@ -177,6 +177,7 @@ Future<void> changeSystemUi(
     {Color navBarColor,
     Color statusBarColor,
     Brightness statusBarBrightness,
+    Brightness navBarBrightness,
     int milliDelay = 50}) async {
   await Future.delayed(Duration(milliseconds: milliDelay));
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
@@ -184,6 +185,7 @@ Future<void> changeSystemUi(
     statusBarColor: statusBarColor,
     systemNavigationBarDividerColor: navBarColor,
     systemNavigationBarColor: navBarColor,
+    systemNavigationBarIconBrightness: navBarBrightness,
   ));
 }
 

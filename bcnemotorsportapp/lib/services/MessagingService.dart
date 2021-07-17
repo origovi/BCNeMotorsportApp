@@ -25,7 +25,6 @@ class MessagingService {
 
   static Future<String> getToken() async => await FirebaseMessaging.instance.getToken();
 
-
   // ###### HANDLERS ######
 
   static Future<void> _backgroundHandler(RemoteMessage message) async {
@@ -96,9 +95,18 @@ class MessagingService {
     });
   }
 
-  static Future<void> postNotification(BuildContext context,
-      {@required String title, @required String body, @required String topic, Map data}) async {
-    await FirebaseMessaging.instance.unsubscribeFromTopic(topic);
+  static Future<void> postNotification(
+    BuildContext context, {
+    @required String title,
+    @required String body,
+    String topic,
+    List<String> destTokens,
+    Map data,
+  }) async {
+    assert(topic != null || (destTokens != null && destTokens.isNotEmpty),
+        "When sending a notification, either topic or desTokens must have content.");
+    
+    if (topic != null) await FirebaseMessaging.instance.unsubscribeFromTopic(topic);
     Response response = await post(
       Uri.parse('https://fcm.googleapis.com/fcm/send'),
       headers: <String, String>{
@@ -114,12 +122,13 @@ class MessagingService {
         },
         'android_channel_id': _highChannel.id,
         'priority': 'high',
-        'to': '/topics/' + topic,
+        if (topic != null) 'to': '/topics/' + topic,
+        if (destTokens != null) 'registration_ids': destTokens,
         'data': data,
         //'condition': "'perception' in topics",
       }),
     );
-    await FirebaseMessaging.instance.subscribeToTopic(topic);
+    if (topic != null) await FirebaseMessaging.instance.subscribeToTopic(topic);
     if (response.statusCode < 200 || response.statusCode > 299)
       Popup.errorPopup(context, response.reasonPhrase);
   }

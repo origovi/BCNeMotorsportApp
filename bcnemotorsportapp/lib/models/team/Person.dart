@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 
 class Person {
   String _dbId;
+  String _fcmToken; // can be null
   String _name;
   String _surnames;
   bool _teamLeader;
   bool _hasAbout;
   String _about;
   String _email;
+  int _toDosCompleted;
   // sectionId,   field,   value
   Map<String, Map<String, dynamic>> _sections;
   //la foto aniria aqui
@@ -15,25 +17,30 @@ class Person {
   // CONSTRUCTORS
   Person(
       {String dbId,
+      String fcmToken,
       @required String name,
       @required String surnames,
-      Map<String, Map<String, dynamic>> sections,
-      bool hasAbout,
-      about,
+      Map<String, Map<String, dynamic>> sections = const {},
+      bool hasAbout = false,
+      String about,
+      int toDosCompleted = 0,
       @required String email,
       @required bool teamLeader}) {
     _dbId = dbId;
+    _fcmToken = fcmToken;
     _name = name;
     _surnames = surnames;
     _teamLeader = teamLeader;
-    _hasAbout = hasAbout ?? false;
+    _hasAbout = hasAbout;
     _about = about;
     _email = email;
-    _sections = sections ?? {};
+    _sections = sections;
+    _toDosCompleted = toDosCompleted;
   }
 
   Person.fromRaw(Map<String, dynamic> data) {
     _dbId = data['dbId'];
+    _fcmToken = data['fcmToken'];
     _name = data['name'];
     _surnames = data['surname'];
     _teamLeader = data['teamLeader'];
@@ -41,10 +48,13 @@ class Person {
     _about = data['about'];
     _email = data['email'];
     _sections = new Map<String, Map<String, dynamic>>.from(data['sections']);
+    _toDosCompleted = data['toDosCompleted'] ?? 0;
   }
 
   // GETTERS
   String get dbId => _dbId;
+  /// Can be null
+  String get fcmToken => _fcmToken;
   String get profilePhotoName => _dbId + '.jpg';
   String get name => _name;
   String get surname => _surnames;
@@ -54,6 +64,7 @@ class Person {
   String get about => _about;
   String get email => _email;
   Map<String, Map<String, dynamic>> get sections => _sections;
+  int get toDosCompleted => _toDosCompleted;
 
   List<String> get memberSectionIds {
     List<String> res = [];
@@ -87,12 +98,16 @@ class Person {
     _about = newAbout;
   }
 
-  void setDbId(String newDbId) => this._dbId = newDbId;
+  void setDbId(String newDbId) => _dbId = newDbId;
+  void setFcmToken(String newFcmToken) => _fcmToken = newFcmToken;
 
   // METHODS
+  void incrementToDosCompleted() => _toDosCompleted++;
+
   Map<String, dynamic> toRaw() {
     Map<String, dynamic> res = {};
     res['dbId'] = _dbId;
+    res['fcmToken'] = _fcmToken;
     res['name'] = _name;
     res['surname'] = _surnames;
     res['teamLeader'] = _teamLeader;
@@ -100,6 +115,7 @@ class Person {
     res['hasAbout'] = _hasAbout;
     res['email'] = _email;
     res['sections'] = _sections;
+    res['toDosCompleted'] = _toDosCompleted;
     return res;
   }
 }

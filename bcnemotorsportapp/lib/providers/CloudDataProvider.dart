@@ -9,6 +9,7 @@ import 'package:bcnemotorsportapp/models/toDo/ToDoData.dart';
 import 'package:bcnemotorsportapp/models/toDo/ToDo.dart';
 import 'package:bcnemotorsportapp/models/utilsAndErrors.dart';
 import 'package:bcnemotorsportapp/services/DatabaseService.dart';
+import 'package:bcnemotorsportapp/services/MessagingService.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -16,14 +17,14 @@ class CloudDataProvider extends ChangeNotifier {
   BuildContext _context;
   AllData _data;
   User _user;
-  String _dbId;
+  String _dbUId;
 
   CloudDataProvider();
 
   void init({@required AllData data, @required User user, @required String dbId}) {
     this._data = data;
     this._user = user;
-    this._dbId = dbId;
+    this._dbUId = dbId;
     //notifyListeners();
   }
 
@@ -34,10 +35,10 @@ class CloudDataProvider extends ChangeNotifier {
   bool get allDataNull => _data == null;
   SectionsData get sectionsData => _data.sectionsData;
   CalendarData get calendarData => _data.calendarData;
-  ToDoData get toDoAllData => _data.toDoData;
-  String get dbUId => _dbId;
-  bool get isTeamLeader => personById(_dbId).isTeamLeader;
-  bool get isChief => personById(_dbId).chiefSectionIds.isNotEmpty;
+  ToDoData get toDoData => _data.toDoData;
+  String get dbUId => _dbUId;
+  bool get isTeamLeader => personById(_dbUId).isTeamLeader;
+  bool get isChief => personById(_dbUId).chiefSectionIds.isNotEmpty;
 
   // pulls new data from database
   Future<void> refreshData() async {
@@ -63,6 +64,16 @@ class CloudDataProvider extends ChangeNotifier {
       user.chiefSectionIds.map((e) => _data.sectionsData.sectionById(e)).toList();
 
   // UPDATES
+  Future<bool> updateUserFcmToken() async {
+    String actualFcmToken = await MessagingService.getToken();
+    if (user.fcmToken == null || user.fcmToken != actualFcmToken) {
+      user.setFcmToken(actualFcmToken);
+      await DatabaseService.updateUserFcmToken(_dbUId, actualFcmToken);
+      return true;
+    }
+    return false;
+  }
+
   Future<void> updateSectionAbout(String sectionId, String newAbout) async {
     await DatabaseService.updateSectionAbout(sectionId, newAbout);
   }
@@ -183,6 +194,16 @@ class CloudDataProvider extends ChangeNotifier {
     }
   }
 
+  Future<void> completeToDo(String id) async {
+    toDoData.completeToDo(id);
+    await DatabaseService.updateToDo(id, {'done': true});
+  }
+
+  Future<void> incompleteToDo(String id) async {
+    toDoData.incompleteToDo(id);
+    await DatabaseService.updateToDo(id, {'done': false});
+  }
+
   // ADD NEW
   Future<String> newEvent(Event newEvent) async {
     String newEventId = await DatabaseService.newEvent(newEvent.toRaw());
@@ -196,6 +217,13 @@ class CloudDataProvider extends ChangeNotifier {
     newAnnouncement.addId(newAnnouncementId);
     calendarData.addAnnouncement(newAnnouncement);
     return newAnnouncementId;
+  }
+
+  Future<String> newToDo(ToDo newToDo) async {
+    String newToDoId = await DatabaseService.newToDo(newToDo.toRaw());
+    newToDo.addId(newToDoId);
+    toDoData.addToDo(newToDo);
+    return newToDoId;
   }
 
   // DELETE

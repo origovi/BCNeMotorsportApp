@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class ToDo {
@@ -17,8 +18,10 @@ class ToDo {
     "Chill",
   ];
 
+  // ATTRIBUTES
   String _id;
   String _name;
+  bool _done;
   bool _hasDescription;
   String _description;
   List<String> _personIds;
@@ -34,24 +37,28 @@ class ToDo {
   ToDo({
     String id = "",
     @required String name,
+    bool done = false,
     String description,
     @required List<String> personIds,
-    int importanceLevel = 4,
+    int importanceLevel = defImportanceIndex,
     DateTime whenAdded,
     bool hasDeadline=false,
     DateTime deadline,
   })  : _id = id,
         _name = name,
+        _done = done,
         _hasDescription = description != null,
         _description = description,
         _personIds = personIds ?? [],
         _whenAdded = whenAdded ?? DateTime.now(),
+        _importanceLevel = importanceLevel,
         _hasDeadline = hasDeadline,
         _deadline = deadline;
 
   ToDo.fromRaw(Map<String, dynamic> data, {String id = ""}) {
     _id = id;
     _name = data['name'];
+    _done = data['done'] ?? false;
     _hasDescription = data['hasDescription'] ?? false;
     if (_hasDescription) _description = data['description'];
     _personIds = List<String>.from(data['personIds']);
@@ -64,6 +71,7 @@ class ToDo {
   // GETTERS
   String get id => _id;
   String get name => _name;
+  bool get done => _done;
   bool get hasDescription => _hasDescription;
   String get description => _description;
   List<String> get personIds => _personIds;
@@ -71,4 +79,25 @@ class ToDo {
   DateTime get whenAdded => _whenAdded;
   bool get hasDeadline => _hasDeadline;
   DateTime get deadline => _deadline;
+
+  // METHODS
+  void addId(String newToDoId) => _id = newToDoId;
+
+  void complete() => _done = true;
+  void incomplete() => _done = false;
+
+  Map<String, dynamic> toRaw() {
+    Map<String, dynamic> res = {};
+    res['name'] = _name;
+    res['done'] = _done;
+    res['hasDescription'] = _hasDescription;
+    if (_hasDescription) res['description'] = _description;
+    res['personIds'] = _personIds;
+    res['importanceLevel'] = _importanceLevel;
+    res['hasDeadline'] = _hasDeadline;
+    if (_hasDeadline) res['deadline'] = Timestamp.fromDate(_deadline);
+    res['whenAdded'] = Timestamp.fromDate(_whenAdded);
+    return res;
+  }
+
 }

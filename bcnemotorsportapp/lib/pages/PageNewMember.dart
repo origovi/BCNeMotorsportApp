@@ -233,4 +233,15 @@ class _PageNewMemberState extends State<PageNewMember> {
       ),
     );
   }
+
+  @override
+  void dispose() {
+    nameController.dispose();
+    surnameController.dispose();
+    surnameFocus.dispose();
+    emailController.dispose();
+    emailFocus.dispose();
+    tlFocus.dispose();
+    super.dispose();
+  }
 }

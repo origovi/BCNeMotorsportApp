@@ -7,6 +7,7 @@ import 'package:bcnemotorsportapp/widgets/Buttons.dart';
 import 'package:bcnemotorsportapp/widgets/NiceBox.dart';
 import 'package:bcnemotorsportapp/widgets/ShowImage.dart';
 import 'package:bcnemotorsportapp/widgets/team/SectionGrid.dart';
+import 'package:bcnemotorsportapp/widgets/team/Stat.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -70,9 +71,10 @@ class _ScreenMeState extends State<ScreenMe> {
   Widget build(BuildContext context) {
     return GestureDetector(
       // used to deselect the about note when clicking outside
-      onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
+      onTap: () => _aboutFocus.unfocus(),
       child: ListView(
-        padding: EdgeInsets.only(top: Sizes.sideMargin, right: Sizes.sideMargin, left: Sizes.sideMargin),
+        padding:
+            EdgeInsets.only(top: Sizes.sideMargin, right: Sizes.sideMargin, left: Sizes.sideMargin),
         children: [
           NiceBox(
             child: Column(
@@ -97,6 +99,11 @@ class _ScreenMeState extends State<ScreenMe> {
                 Text(
                   widget._me.email,
                   style: TextStyle(color: Colors.grey[600]),
+                ),
+                SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [Stat('ToDos Completed', widget._me.toDosCompleted)],
                 ),
                 SizedBox(height: 10),
                 Visibility(
@@ -144,7 +151,6 @@ class _ScreenMeState extends State<ScreenMe> {
               ],
             ),
           ),
-          //Column(children: List.filled(10, Container(height: 50,color: Colors.red,)),),
           // CHIEF SECTIONS
           Visibility(
             visible: _chiefSectionsId.length > 0,
@@ -200,10 +206,5 @@ class _ScreenMeState extends State<ScreenMe> {
         ],
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
   }
 }

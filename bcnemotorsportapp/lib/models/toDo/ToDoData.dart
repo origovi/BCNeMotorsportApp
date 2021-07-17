@@ -21,4 +21,32 @@ class ToDoData {
   // GETTERS
   List<ToDo> get allToDos => _data;
   List<ToDo> get myToDos => _data.where((element) => element.personIds.contains(_dbId)).toList();
+  List<ToDo> get sectionToDosExcMine => _data.where((element) => element.personIds.any((element) => element != _dbId)).toList();
+
+  // METHODS
+  bool existsToDo(String id) {
+    return _data.any((element) => element.id == id);
+  }
+
+  void addToDo(ToDo newToDo) {
+    if (!existsToDo(newToDo.id)) _data.add(newToDo);
+  }
+
+  void completeToDo(String id) {
+    for (ToDo toDo in _data) {
+      if (toDo.id == id) {
+        toDo.complete();
+        return;
+      }
+    }
+  }
+
+  void incompleteToDo(String id) {
+    for (ToDo toDo in _data) {
+      if (toDo.id == id) {
+        toDo.incomplete();
+        return;
+      }
+    }
+  }
 }

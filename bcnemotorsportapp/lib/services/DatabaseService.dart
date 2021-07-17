@@ -58,6 +58,10 @@ class DatabaseService {
 
   // ########## UPDATES ##########
 
+  static Future<void> updateUserFcmToken(String dbId, String newToken) async {
+    await FirebaseFirestore.instance.collection('users').doc(dbId).update({'fcmToken': newToken});
+  }
+
   static Future<void> updateSectionAbout(String sectionId, String newAbout) async {
     await FirebaseFirestore.instance.collection('sections').doc(sectionId).update({'about': newAbout, 'hasAbout': newAbout.isNotEmpty});
   }
@@ -102,6 +106,10 @@ class DatabaseService {
       // TODO
     }
     return newDbIds;
+  }
+
+  static Future<void> updateToDo(String id, Map<String, dynamic> dataToUpdate) async {
+    await FirebaseFirestore.instance.collection('todos').doc(id).update(dataToUpdate);
   }
 
 

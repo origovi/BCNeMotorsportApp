@@ -28,13 +28,14 @@ class YesNo {
 }
 
 class SortToDo {
-  static const String ascending = "Biggest amount first";
-  static const String descending = "Smallest amount first";
+  static const String mImportantFirst = "Most important first";
+  static const String lImportantFirst = "Least important first";
   static const String newest = "Newest first";
   static const String oldest = "Oldest first";
-  static const String modified = "Recently modified first";
+  static const String deadlineCloser = "Deadline closer first";
+  static const String deadlineFurther = "Deadline further first";
 
-  static const List<String> choices = [ascending, descending, newest, oldest, modified];
+  static const List<String> choices = [mImportantFirst, lImportantFirst, newest, oldest, deadlineCloser, deadlineFurther];
 }
 
 class NewCalendar {

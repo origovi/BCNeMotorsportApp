@@ -31,7 +31,7 @@ class _PageHomeState extends State<PageHome> {
 
   @override
   Widget build(BuildContext context) {
-    changeSystemUi(navBarColor: Colors.grey[50]);
+    changeSystemUi(navBarColor: Colors.grey[50], navBarBrightness: Brightness.dark);
     List<Widget> sections = [ScreenCalendar(), ScreenToDo(), ScreenTesting(), ScreenTeam()];
     //final user = Provider.of<User>(context);
     // if (user != null && user.emailVerified)

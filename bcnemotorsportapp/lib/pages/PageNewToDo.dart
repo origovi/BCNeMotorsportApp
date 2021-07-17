@@ -1,11 +1,8 @@
 import 'package:bcnemotorsportapp/Constants.dart';
-import 'package:bcnemotorsportapp/models/calendar/Event.dart';
 import 'package:bcnemotorsportapp/models/team/Person.dart';
-import 'package:bcnemotorsportapp/models/team/Section.dart';
 import 'package:bcnemotorsportapp/models/toDo/ToDo.dart';
 import 'package:bcnemotorsportapp/models/utilsAndErrors.dart';
 import 'package:bcnemotorsportapp/providers/CloudDataProvider.dart';
-import 'package:bcnemotorsportapp/widgets/Buttons.dart';
 import 'package:bcnemotorsportapp/widgets/NiceBox.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -30,7 +27,7 @@ class _PageNewToDoState extends State<PageNewToDo> {
   FocusNode newPersonFocus;
   List<Person> possibleNewPersonList;
 
-  FocusNode noteFocus;
+  FocusNode descriptionFocus;
 
   bool isTeamLeader;
 
@@ -54,7 +51,7 @@ class _PageNewToDoState extends State<PageNewToDo> {
     newPersonController = TextEditingController();
     newPersonFocus = FocusNode();
     possibleNewPersonList = [];
-    noteFocus = FocusNode();
+    descriptionFocus = FocusNode();
     importanceIndex = ToDo.defImportanceIndex;
     hasDescription = false;
     hasDeadline = false;
@@ -68,10 +65,12 @@ class _PageNewToDoState extends State<PageNewToDo> {
         name: nameController.text.trim(),
         hasDeadline: hasDeadline,
         deadline: deadline,
-        personIds: [],
+        personIds: [Provider.of<CloudDataProvider>(context, listen: false).dbUId] +
+            personList.map((e) => e.dbId).toList(),
         description: descriptionController.text.trim(),
+        importanceLevel: importanceIndex,
       );
-      Navigator.of(context).pop([newToDo, notifyUsers]);
+      Navigator.of(context).pop([newToDo, notifyUsers, personList.map((e) => e.fcmToken).toList()]);
     } else {
       setState(() {
         autovalidateMode = AutovalidateMode.always;
@@ -184,7 +183,7 @@ class _PageNewToDoState extends State<PageNewToDo> {
                               child: TextField(
                                 maxLines: 4,
                                 controller: descriptionController,
-                                focusNode: noteFocus,
+                                focusNode: descriptionFocus,
                                 keyboardType: TextInputType.multiline,
                                 textCapitalization: TextCapitalization.sentences,
                                 decoration: InputDecoration(
@@ -202,7 +201,7 @@ class _PageNewToDoState extends State<PageNewToDo> {
                               replacement: TextButton(
                                 onPressed: () => setState(() {
                                   hasDescription = true;
-                                  noteFocus.requestFocus();
+                                  descriptionFocus.requestFocus();
                                 }),
                                 style: TextButton.styleFrom(padding: EdgeInsets.zero),
                                 child: Row(
@@ -255,14 +254,14 @@ class _PageNewToDoState extends State<PageNewToDo> {
                             SizedBox(height: 10),
                             // Deadline
                             TextButton(
-                              onLongPress: deadline == null
-                                  ? null
-                                  : () {
+                              onLongPress: hasDeadline
+                                  ? () {
                                       setState(() {
-                                        deadline = null;
+                                        hasDeadline = false;
                                       });
                                       snackMessage3Secs(context, "Deadline removed");
-                                    },
+                                    }
+                                  : null,
                               onPressed: () async {
                                 DateTime ret = await pickDate(
                                   context,
@@ -271,6 +270,7 @@ class _PageNewToDoState extends State<PageNewToDo> {
                                 );
                                 if (ret != null) {
                                   setState(() {
+                                    hasDeadline = true;
                                     deadline = ret;
                                   });
                                 }
@@ -284,7 +284,7 @@ class _PageNewToDoState extends State<PageNewToDo> {
                                     child: Icon(Icons.date_range, color: Colors.grey[600]),
                                   ),
                                   Text(
-                                    deadline == null
+                                    !hasDeadline
                                         ? "Add deadline"
                                         : "Deadline: ${formatEventDate(deadline)}",
                                     style: TextStyle(
@@ -369,6 +369,7 @@ class _PageNewToDoState extends State<PageNewToDo> {
                                                     onPressed: () {
                                                       setState(() {
                                                         personList.removeAt(index);
+                                                        if (personList.isEmpty) notifyUsers = false;
                                                       });
                                                     },
                                                     icon: Icon(Icons.clear))
@@ -408,43 +409,50 @@ class _PageNewToDoState extends State<PageNewToDo> {
                                 ],
                               ),
                             ),
-                            SizedBox(height: 10),
-                            Divider(thickness: 1.5),
-                            SizedBox(height: 10),
-                            // Notification
-                            TextButton(
-                              onPressed: () => setState(() {
-                                notifyUsers = !notifyUsers;
-                              }),
-                              style: TextButton.styleFrom(padding: EdgeInsets.zero),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
+                            if (personList.isNotEmpty)
+                              Column(
                                 children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(right: 25, left: 8),
-                                    child: Icon(
-                                        notifyUsers
-                                            ? Icons.notifications_active
-                                            : Icons.notifications,
-                                        color: Colors.grey[600]),
-                                  ),
-                                  Text(
-                                    "Notify users now?",
-                                    style: TextStyle(
-                                        color: Colors.black, fontWeight: FontWeight.normal),
-                                  ),
-                                  Spacer(),
-                                  Switch(
-                                    value: notifyUsers,
-                                    onChanged: (val) {
+                                  SizedBox(height: 10),
+                                  Divider(thickness: 1.5),
+                                  SizedBox(height: 10),
+                                  // Notification
+                                  TextButton(
+                                    onPressed: () {
                                       setState(() {
-                                        notifyUsers = val;
+                                        notifyUsers = !notifyUsers;
                                       });
                                     },
+                                    style: TextButton.styleFrom(padding: EdgeInsets.zero),
+                                    child: Row(
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.only(right: 25, left: 8),
+                                          child: Icon(
+                                              notifyUsers
+                                                  ? Icons.notifications_active
+                                                  : Icons.notifications,
+                                              color: Colors.grey[600]),
+                                        ),
+                                        Text(
+                                          "Notify users now?",
+                                          style: TextStyle(
+                                              color: Colors.black, fontWeight: FontWeight.normal),
+                                        ),
+                                        Spacer(),
+                                        Switch(
+                                          value: notifyUsers,
+                                          onChanged: (val) {
+                                            setState(() {
+                                              notifyUsers = val;
+                                            });
+                                          },
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ],
                               ),
-                            ),
                           ],
                         ),
                       ),
@@ -452,7 +460,7 @@ class _PageNewToDoState extends State<PageNewToDo> {
                   ),
                 ),
                 Positioned(
-                    bottom: 155,
+                    bottom: personList.isEmpty ? 70 : 155,
                     left: 78,
                     child: Visibility(
                       visible: addingNewPerson &&
@@ -538,5 +546,15 @@ class _PageNewToDoState extends State<PageNewToDo> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    nameController.dispose();
+    descriptionController.dispose();
+    newPersonController.dispose();
+    newPersonFocus.dispose();
+    descriptionFocus.dispose();
+    super.dispose();
   }
 }

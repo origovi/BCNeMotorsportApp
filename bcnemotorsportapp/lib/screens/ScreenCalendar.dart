@@ -50,7 +50,8 @@ class _ScreenCalendarState extends State<ScreenCalendar> {
         List<dynamic> res = List<dynamic>.from(value);
         Announcement newAnnouncement = res[0];
         Popup.loadingPopup(context);
-        await Provider.of<CloudDataProvider>(context, listen: false).newAnnouncement(newAnnouncement);
+        await Provider.of<CloudDataProvider>(context, listen: false)
+            .newAnnouncement(newAnnouncement);
         if (res[1]) {
           MessagingService.postNotification(
             context,
@@ -71,39 +72,43 @@ class _ScreenCalendarState extends State<ScreenCalendar> {
     Widget calendarWidgetsAux = Stack(
       children: [
         Calendar(cloudDataProvider.calendarData, key: UniqueKey()),
-        DraggableScrollableSheet(
-          initialChildSize: 0.085,
-          minChildSize: 0.085,
-          maxChildSize: 0.9,
-          expand: true,
-          builder: (context, scrollController) {
-            return NiceBox(
-              padding: EdgeInsets.zero,
-              radius: 25,
-              bottomCircular: false,
-              child: Stack(
-                alignment: Alignment.topCenter,
-                children: [
-                  NoticeBoard(
-                    cloudDataProvider.calendarData.announcements,
-                    key: UniqueKey(),
-                  ),
-                  SingleChildScrollView(
-                    controller: scrollController,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 10),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(500),
-                          color: Colors.grey[400],
-                        ),
-                        height: 5,
-                        width: 50,
+        LayoutBuilder(
+          builder: (context, constraints) {
+            return DraggableScrollableSheet(
+              initialChildSize: 65/constraints.maxHeight,
+              minChildSize: 65/constraints.maxHeight,
+              maxChildSize: 0.9,
+              expand: true,
+              builder: (context, scrollController) {
+                return NiceBox(
+                  padding: EdgeInsets.zero,
+                  radius: 25,
+                  bottomCircular: false,
+                  child: Stack(
+                    alignment: Alignment.topCenter,
+                    children: [
+                      NoticeBoard(
+                        cloudDataProvider.calendarData.announcements,
+                        key: UniqueKey(),
                       ),
-                    ),
+                      SingleChildScrollView(
+                        controller: scrollController,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 10),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(500),
+                              color: Colors.grey[400],
+                            ),
+                            height: 5,
+                            width: 50,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                );
+              },
             );
           },
         ),

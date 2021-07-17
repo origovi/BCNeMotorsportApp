@@ -21,7 +21,7 @@ class _PageNewEventState extends State<PageNewEvent> {
   AutovalidateMode autovalidateMode;
 
   TextEditingController nameController;
-  TextEditingController _noteController;
+  TextEditingController noteController;
 
   FocusNode noteFocus;
 
@@ -41,7 +41,7 @@ class _PageNewEventState extends State<PageNewEvent> {
     isTeamLeader = Provider.of<CloudDataProvider>(context, listen: false).isTeamLeader;
     autovalidateMode = AutovalidateMode.disabled;
     nameController = TextEditingController();
-    _noteController = TextEditingController();
+    noteController = TextEditingController();
     noteFocus = FocusNode();
     fromDate = DateTime.now();
     toDate = fromDate.add(Duration(hours: 1));
@@ -65,7 +65,7 @@ class _PageNewEventState extends State<PageNewEvent> {
           to: toDate,
           global: global,
           sectionId: selectedSectionVisible == null ? null : selectedSectionVisible.sectionId,
-          note: _noteController.text.trim(),
+          note: noteController.text.trim(),
         );
         Navigator.of(context).pop([newEvent, notifyUsers]);
       }
@@ -480,7 +480,7 @@ class _PageNewEventState extends State<PageNewEvent> {
                           visible: noteCreated,
                           child: TextField(
                             maxLines: 4,
-                            controller: _noteController,
+                            controller: noteController,
                             focusNode: noteFocus,
                             keyboardType: TextInputType.multiline,
                             textCapitalization: TextCapitalization.sentences,
@@ -561,5 +561,13 @@ class _PageNewEventState extends State<PageNewEvent> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    nameController.dispose();
+    noteController.dispose();
+    noteFocus.dispose();
+    super.dispose();
   }
 }

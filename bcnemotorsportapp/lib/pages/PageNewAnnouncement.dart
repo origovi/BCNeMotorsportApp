@@ -313,4 +313,12 @@ class _PageNewAnnouncementState extends State<PageNewAnnouncement> {
       ),
     );
   }
+
+  @override
+  void dispose() {
+    titleController.dispose();
+    bodyController.dispose();
+    bodyFocus.dispose();
+    super.dispose();
+  }
 }

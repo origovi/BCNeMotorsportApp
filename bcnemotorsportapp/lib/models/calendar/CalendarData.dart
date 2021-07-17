@@ -7,7 +7,7 @@ import 'package:bcnemotorsportapp/models/calendar/Event.dart';
 class CalendarData extends CalendarDataSource {
   List<Event> _allAppointments;
   List<Announcement> _allAnnouncements, _announcements;
-  
+
   List<String> _selectedSectionIds;
   bool _global;
   CalendarData(List<Event> eventSource) {
@@ -16,7 +16,8 @@ class CalendarData extends CalendarDataSource {
     _global = true;
   }
 
-  factory CalendarData.fromDatabase(List<QueryDocumentSnapshot> eventsSnapshot, List<QueryDocumentSnapshot> announcementsSnapshot) {
+  factory CalendarData.fromDatabase(List<QueryDocumentSnapshot> eventsSnapshot,
+      List<QueryDocumentSnapshot> announcementsSnapshot) {
     Map<String, Map<String, dynamic>> eventsAux = {};
     Map<String, Map<String, dynamic>> announcementsAux = {};
     eventsSnapshot.forEach((element) => eventsAux[element.id] = element.data());
@@ -24,12 +25,14 @@ class CalendarData extends CalendarDataSource {
     return new CalendarData.fromRaw(eventsAux, announcementsAux);
   }
 
-  CalendarData.fromRaw(Map<String, Map<String, dynamic>> eventsData, Map<String, Map<String, dynamic>> announcementsData) {
+  CalendarData.fromRaw(Map<String, Map<String, dynamic>> eventsData,
+      Map<String, Map<String, dynamic>> announcementsData) {
     _allAppointments = [];
     _allAnnouncements = [];
     eventsData.forEach((key, value) => _allAppointments.add(Event.fromRaw(value, id: key)));
     appointments = _allAppointments;
-    announcementsData.forEach((key, value) => _allAnnouncements.add(Announcement.fromRaw(value, announcementId: key)));
+    announcementsData.forEach(
+        (key, value) => _allAnnouncements.add(Announcement.fromRaw(value, announcementId: key)));
     _announcements = _allAnnouncements;
     _announcements.sort((a1, a2) => a1.whenAdded.isBefore(a2.whenAdded) ? 1 : 0);
   }
@@ -58,18 +61,26 @@ class CalendarData extends CalendarDataSource {
   }
 
   void addEvent(Event e) {
-    _allAppointments.add(e);
-    if ((e.global && _global) || (!e.global && _selectedSectionIds.contains(e.sectionId)))
-      this.appointments.add(e);
+    if (!existsEvent(e.id)) {
+      _allAppointments.add(e);
+      if ((e.global && _global) || (!e.global && _selectedSectionIds.contains(e.sectionId)))
+        this.appointments.add(e);
+    }
   }
 
   void addAnnouncement(Announcement a) {
-    _allAnnouncements.add(a);
-    if ((a.global && _global) || (!a.global && _selectedSectionIds.contains(a.sectionId))) {
-      _announcements.add(a);
-      _announcements.sort((a1, a2) => a1.whenAdded.isBefore(a2.whenAdded) ? 1 : 0);
+    if (!existsAnnouncement(a.id)) {
+      _allAnnouncements.add(a);
+      if ((a.global && _global) || (!a.global && _selectedSectionIds.contains(a.sectionId))) {
+        _announcements.add(a);
+        _announcements.sort((a1, a2) => a1.whenAdded.isBefore(a2.whenAdded) ? 1 : 0);
+      }
     }
   }
+
+  bool existsEvent(String eventId) => _allAppointments.any((element) => element.id == eventId);
+  bool existsAnnouncement(String announcementId) =>
+      _allAnnouncements.any((element) => element.id == announcementId);
 
   void deleteEvent(String eventId) {
     _allAppointments.removeWhere((element) => element.id == eventId);

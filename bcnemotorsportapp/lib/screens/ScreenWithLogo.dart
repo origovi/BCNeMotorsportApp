@@ -8,7 +8,7 @@ class ScreenWithLogo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    changeSystemUi(navBarColor: TeamColor.teamColor, statusBarBrightness: Brightness.light);
+    changeSystemUi(navBarColor: TeamColor.teamColor, statusBarBrightness: Brightness.light, navBarBrightness: Brightness.light);
     return Scaffold(
       backgroundColor: TeamColor.teamColor,
       body: Center(
