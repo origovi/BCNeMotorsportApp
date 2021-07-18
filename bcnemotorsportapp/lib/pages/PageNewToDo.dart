@@ -271,7 +271,7 @@ class _PageNewToDoState extends State<PageNewToDo> {
                                 if (ret != null) {
                                   setState(() {
                                     hasDeadline = true;
-                                    deadline = ret;
+                                    deadline = DateTime(ret.year, ret.month, ret.day, 23, 59);
                                   });
                                 }
                               },
@@ -286,7 +286,7 @@ class _PageNewToDoState extends State<PageNewToDo> {
                                   Text(
                                     !hasDeadline
                                         ? "Add deadline"
-                                        : "Deadline: ${formatEventDate(deadline)}",
+                                        : "Deadline: ${formatDate(deadline)}",
                                     style: TextStyle(
                                         color: Colors.black, fontWeight: FontWeight.normal),
                                   ),

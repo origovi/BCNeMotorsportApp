@@ -89,7 +89,7 @@ class PageEvent extends StatelessWidget {
                 Icon(Icons.calendar_today, size: 20),
                 SizedBox(width: 15),
                 Text(
-                    formatEventDates(event.from, event.to, event.allDay),
+                    formatDates(event.from, event.to, event.allDay),
                     style: TextStyle(fontSize: 16),
                 ),
               ],

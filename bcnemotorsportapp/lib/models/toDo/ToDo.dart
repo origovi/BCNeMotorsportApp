@@ -11,6 +11,13 @@ class ToDo {
     Colors.green[_intensity],
   ];
 
+  static List<Color> _deadlineProgressColorList = [
+    Colors.red[_intensity+200],
+    Colors.orange[_intensity+200],
+    Colors.yellow[_intensity+200],
+    Colors.green[_intensity+200],
+  ];
+
   static const List<String> importanceNames = [
     "We are late (LOL)",
     "Fiu fiu",
@@ -42,12 +49,12 @@ class ToDo {
     @required List<String> personIds,
     int importanceLevel = defImportanceIndex,
     DateTime whenAdded,
-    bool hasDeadline=false,
+    bool hasDeadline = false,
     DateTime deadline,
   })  : _id = id,
         _name = name,
         _done = done,
-        _hasDescription = description != null,
+        _hasDescription = description != null && description.isNotEmpty,
         _description = description,
         _personIds = personIds ?? [],
         _whenAdded = whenAdded ?? DateTime.now(),
@@ -79,6 +86,20 @@ class ToDo {
   DateTime get whenAdded => _whenAdded;
   bool get hasDeadline => _hasDeadline;
   DateTime get deadline => _deadline;
+  Color get color => colorList[_importanceLevel];
+  Color get deadlineProgressColor => _deadlineProgressColorList[_importanceLevel];
+  double get deadlineProgress {
+    if (!_hasDeadline)
+      return 0.0;
+    else {
+      DateTime now = DateTime.now();
+      if (now.isAfter(_deadline))
+        return 1.0;
+      else
+        return (now.millisecondsSinceEpoch - _whenAdded.millisecondsSinceEpoch) /
+            (_deadline.millisecondsSinceEpoch - _whenAdded.millisecondsSinceEpoch);
+    }
+  }
 
   // METHODS
   void addId(String newToDoId) => _id = newToDoId;
@@ -99,5 +120,4 @@ class ToDo {
     res['whenAdded'] = Timestamp.fromDate(_whenAdded);
     return res;
   }
-
 }

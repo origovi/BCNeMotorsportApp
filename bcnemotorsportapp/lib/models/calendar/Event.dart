@@ -98,9 +98,9 @@ class Event {
       res += "today";
     }
     else {
-      res += "on ${formatEventDate(_from, year: _from.year != now.year)}";
+      res += "on ${formatDate(_from, year: _from.year != now.year)}";
     }
-    if (!_allDay) res += " at ${formatEventTime(_from)}";
+    if (!_allDay) res += " at ${formatTime(_from)}";
     return res;
   }
 

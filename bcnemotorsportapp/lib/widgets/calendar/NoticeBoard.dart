@@ -91,7 +91,7 @@ class _NoticeBoardState extends State<NoticeBoard> {
                       borderRadius: BorderRadius.circular(15),
                     ),
                     child: Text(
-                      formatEventDate(anno.whenAdded,
+                      formatDate(anno.whenAdded,
                           year: !sameYear, month: !sameMonth, short: !sameYear),
                       style: TextStyle(color: Colors.white),
                     ),

@@ -29,7 +29,7 @@ class PersonToDo extends StatelessWidget {
             itemBuilder: (context, index) {
               return Padding(
                 padding: const EdgeInsets.symmetric(vertical: 10, horizontal: Sizes.sideMargin),
-                child: ToDoCard(toDos[index]),
+                child: ToDoCard(toDos[index], width: 315),
               );
             },
           ),

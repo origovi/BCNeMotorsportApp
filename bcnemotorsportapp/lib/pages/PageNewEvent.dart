@@ -276,7 +276,7 @@ class _PageNewEventState extends State<PageNewEvent> {
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
                                           TextButton(
-                                            child: Text(formatEventDate(fromDate)),
+                                            child: Text(formatDate(fromDate)),
                                             onPressed: () async {
                                               DateTime ret =
                                                   await pickDate(context, initialDate: fromDate);
@@ -301,7 +301,7 @@ class _PageNewEventState extends State<PageNewEvent> {
                                           Visibility(
                                             visible: !allDay,
                                             child: TextButton(
-                                              child: Text(formatEventTime(fromDate)),
+                                              child: Text(formatTime(fromDate)),
                                               onPressed: () async {
                                                 DateTime ret = await pickTime(context, fromDate);
                                                 if (ret.isAfter(toDate) ||
@@ -328,7 +328,7 @@ class _PageNewEventState extends State<PageNewEvent> {
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
                                           TextButton(
-                                            child: Text(formatEventDate(toDate)),
+                                            child: Text(formatDate(toDate)),
                                             onPressed: () async {
                                               DateTime ret =
                                                   await pickDate(context, initialDate: toDate);
@@ -353,7 +353,7 @@ class _PageNewEventState extends State<PageNewEvent> {
                                           Visibility(
                                             visible: !allDay,
                                             child: TextButton(
-                                              child: Text(formatEventTime(toDate)),
+                                              child: Text(formatTime(toDate)),
                                               onPressed: () async {
                                                 DateTime ret = await pickTime(context, toDate);
                                                 if (ret.isBefore(fromDate) ||

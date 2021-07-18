@@ -120,8 +120,7 @@ class _ScreenToDoState extends State<ScreenToDo> with SingleTickerProviderStateM
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<CloudDataProvider>(context, listen: false);
-    List<ToDo> myToDosSorted =
-        _sortToDos(provider.toDoData.myToDos);
+    List<ToDo> myToDosSorted = _sortToDos(provider.toDoData.myToDos);
     List<ToDo> sectionToDosExcMineSorted = _sortToDos(provider.toDoData.sectionToDosExcMine);
     return Scaffold(
       floatingActionButton: FloatingActionButton(
@@ -132,56 +131,49 @@ class _ScreenToDoState extends State<ScreenToDo> with SingleTickerProviderStateM
         floatHeaderSlivers: true,
         headerSliverBuilder: (context, innerBoxScrolled) {
           return [
-            SliverOverlapAbsorber(
-              handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-              sliver: SliverSafeArea(
-                top: false,
-                sliver: SliverAppBar(
-                  title: Text(tabIndex == 0 ? "My ToDo" : "Section ToDo"),
-                  brightness: Brightness.dark,
-                  floating: true,
-                  pinned: true,
-                  snap: true,
-                  forceElevated: innerBoxScrolled,
-                  actions: [
-                    PopupMenuButton<String>(
-                      tooltip: "Sort by",
-                      icon: Icon(Icons.sort),
-                      onSelected: (selectedValue) {
-                        setState(() {
-                          sortState = selectedValue;
-                        });
-                      },
-                      itemBuilder: (_) {
-                        return SortToDo.choices
-                            .map((String choice) => PopupMenuItem<String>(
-                                  value: choice,
-                                  child: Row(
-                                    children: [
-                                      Text(choice),
-                                      Spacer(),
-                                      if (sortState == choice)
-                                        Icon(Icons.check, color: Colors.black),
-                                    ],
-                                  ),
-                                ))
-                            .toList();
-                      },
-                    )
-                  ],
-                  bottom: TabBar(
-                    controller: _tabController,
-                    indicatorColor: Colors.white,
-                    tabs: [
-                      Tab(
-                        icon: Icon(Icons.checklist_outlined),
-                      ),
-                      Tab(
-                        icon: Icon(Icons.group),
-                      )
-                    ],
+            SliverAppBar(
+              title: Text(tabIndex == 0 ? "My ToDo" : "Section ToDo"),
+              brightness: Brightness.dark,
+              floating: true,
+              pinned: true,
+              snap: true,
+              forceElevated: innerBoxScrolled,
+              actions: [
+                PopupMenuButton<String>(
+                  tooltip: "Sort by",
+                  icon: Icon(Icons.sort),
+                  onSelected: (selectedValue) {
+                    setState(() {
+                      sortState = selectedValue;
+                    });
+                  },
+                  itemBuilder: (_) {
+                    return SortToDo.choices
+                        .map((String choice) => PopupMenuItem<String>(
+                              value: choice,
+                              child: Row(
+                                children: [
+                                  Text(choice),
+                                  Spacer(),
+                                  if (sortState == choice) Icon(Icons.check, color: Colors.black),
+                                ],
+                              ),
+                            ))
+                        .toList();
+                  },
+                )
+              ],
+              bottom: TabBar(
+                controller: _tabController,
+                indicatorColor: Colors.white,
+                tabs: [
+                  Tab(
+                    icon: Icon(Icons.checklist_outlined),
                   ),
-                ),
+                  Tab(
+                    icon: Icon(Icons.group),
+                  )
+                ],
               ),
             ),
           ];

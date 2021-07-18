@@ -229,7 +229,7 @@ InputDecoration signInFormDecoration(String hintText) {
 }
 
 // Transform a timestamp to a fancy string
-String formatDateTime(DateTime d) {
+String formatDatePhrase(DateTime d) {
   bool isYesterday(DateTime d2) {
     final DateTime yesterday = DateTime.now().subtract(Duration(days: 1));
     return yesterday.day == d2.day && yesterday.month == d2.month && yesterday.year == d2.year;
@@ -261,33 +261,33 @@ String formatDateTime(DateTime d) {
   return s;
 }
 
-String formatEventDates(DateTime t1, DateTime t2, bool allDay) {
+String formatDates(DateTime t1, DateTime t2, bool allDay) {
   bool showYear = t1.year != t2.year;
-  String t1Format = formatEventDate(t1, year: showYear);
-  String t2Format = formatEventDate(t2, year: showYear);
+  String t1Format = formatDate(t1, year: showYear);
+  String t2Format = formatDate(t2, year: showYear);
 
   String res = t1Format;
   // Intradia
   if (t1Format == t2Format) {
     if (!allDay) {
-      res += "  ·  " + formatEventTime(t1) + "  -  " + formatEventTime(t2);
+      res += "  ·  " + formatTime(t1) + "  -  " + formatTime(t2);
     }
   } else {
     if (!allDay) {
       res += "  ·  " +
-          formatEventTime(t1) +
+          formatTime(t1) +
           "  -\n" +
-          formatEventDate(t2, year: showYear) +
+          formatDate(t2, year: showYear) +
           "  ·  " +
-          formatEventTime(t2);
+          formatTime(t2);
     } else {
-      res += "  -  " + formatEventDate(t2, year: showYear);
+      res += "  -  " + formatDate(t2, year: showYear);
     }
   }
   return res;
 }
 
-String formatEventDate(DateTime t, {bool short = false, bool year = true, bool month = true}) {
+String formatDate(DateTime t, {bool short = false, bool year = true, bool month = true, bool yearWhenNecessary = false}) {
   String res = "";
   if (short) {
     res += Dates.daysShort[t.weekday - 1] + ", ";
@@ -298,11 +298,12 @@ String formatEventDate(DateTime t, {bool short = false, bool year = true, bool m
     res += t.day.toString();
     if (month) res += " " + Dates.months[t.month - 1].toLowerCase();
   }
+  if (yearWhenNecessary) year = DateTime.now().year != t.year;
   if (year) res += ", " + t.year.toString();
   return res;
 }
 
-String formatEventTime(DateTime t) {
+String formatTime(DateTime t) {
   String res = "";
   if (t.hour < 10) res += "0";
   res += t.hour.toString() + ":";
