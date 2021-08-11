@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 class ScreenMyToDos extends StatelessWidget {
   final List<ToDo> data;
+
   const ScreenMyToDos(this.data);
 
   @override
@@ -23,7 +24,7 @@ class ScreenMyToDos extends StatelessWidget {
       ),
       replacement: Center(
         child: Text(
-          "You have no ToDos. Are you here not to work?",
+          "You have no ToDos here. I won't tell anybody.",
           style: TextStyle(
             color: Colors.grey[600],
             fontWeight: FontWeight.bold,

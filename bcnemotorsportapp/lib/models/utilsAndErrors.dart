@@ -203,6 +203,7 @@ Future<PickedFile> pickGalleryImage() async {
 }
 
 void snackMessage3Secs(BuildContext context, String message) {
+  ScaffoldMessenger.of(context).removeCurrentSnackBar();
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(
       content: Text(message),
@@ -230,38 +231,29 @@ InputDecoration signInFormDecoration(String hintText) {
 
 // Transform a timestamp to a fancy string
 String formatDatePhrase(DateTime d) {
+  DateTime now = DateTime.now();
   bool isYesterday(DateTime d2) {
-    final DateTime yesterday = DateTime.now().subtract(Duration(days: 1));
+    final DateTime yesterday = now.subtract(Duration(days: 1));
     return yesterday.day == d2.day && yesterday.month == d2.month && yesterday.year == d2.year;
   }
 
-  String formatHour(DateTime d) {
-    String s = "";
-    if (d.hour < 10) s += '0';
-    s += d.hour.toString();
-    s += ':';
-    if (d.minute < 10) s += '0';
-    s += d.minute.toString();
-    return s;
-  }
-
   String s;
-  Duration diferencia = DateTime.now().difference(d);
+  Duration diferencia = now.difference(d);
   if (diferencia.inDays < 1) {
-    s = formatHour(d);
+    s = formatTime(d);
     if (diferencia.inMinutes < 5)
-      s = "just now";
-    else if (diferencia.inMinutes < 15)
-      s = "a while ago";
-    else if (isYesterday(d)) s = "yesterday";
+      s = "Just now";
+    else if (diferencia.inMinutes < 60)
+      s = "A while ago";
+    else if (isYesterday(d)) s = "Yesterday";
   } else if (isYesterday(d))
-    s = "yesterday";
+    s = "Yesterday";
   else
-    s = "${d.month}-${d.day}-${d.year}";
+    s = formatDate(d, yearWhenNecessary: true, short: true);
   return s;
 }
 
-String formatDates(DateTime t1, DateTime t2, bool allDay) {
+String formatEventDates(DateTime t1, DateTime t2, bool allDay) {
   bool showYear = t1.year != t2.year;
   String t1Format = formatDate(t1, year: showYear);
   String t2Format = formatDate(t2, year: showYear);

@@ -1,15 +1,18 @@
 import 'package:bcnemotorsportapp/pages/PageDisplayItem.dart';
 import 'package:bcnemotorsportapp/pages/PageError.dart';
-import 'package:bcnemotorsportapp/pages/PageEvent.dart';
-import 'package:bcnemotorsportapp/pages/PageNewAnnouncement.dart';
-import 'package:bcnemotorsportapp/pages/PageNewEvent.dart';
-import 'package:bcnemotorsportapp/pages/PageNewMember.dart';
-import 'package:bcnemotorsportapp/pages/PageNewToDo.dart';
+import 'package:bcnemotorsportapp/pages/calendar/PageEvent.dart';
+import 'package:bcnemotorsportapp/pages/calendar/PageNewAnnouncement.dart';
+import 'package:bcnemotorsportapp/pages/calendar/PageNewEvent.dart';
+import 'package:bcnemotorsportapp/pages/team/PageMember.dart';
+import 'package:bcnemotorsportapp/pages/team/PageNewMember.dart';
+import 'package:bcnemotorsportapp/pages/team/PageNewSection.dart';
+import 'package:bcnemotorsportapp/pages/toDo/PageNewToDo.dart';
+import 'package:bcnemotorsportapp/pages/toDo/PageToDo.dart';
 import 'package:flutter/material.dart';
 
 // Every page must be imported and then a route given
 import 'package:bcnemotorsportapp/Decisor.dart';
-import 'package:bcnemotorsportapp/pages/PageSection.dart';
+import 'package:bcnemotorsportapp/pages/team/PageSection.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -23,10 +26,17 @@ class RouteGenerator {
 
       case '/team/section':
         return MaterialPageRoute(builder: (_) => PageSection(args));
-        
+      
+      case '/team/member':
+        Map<String, dynamic> aux = Map<String, dynamic>.from(args);
+        return MaterialPageRoute(builder: (_) => PageMember(aux['person'], aux['setStateParent']));
+
       case '/team/newMember':
         return MaterialPageRoute(builder: (_) => PageNewMember());
-
+  
+      case '/team/newSection':
+        return MaterialPageRoute(builder: (_) => PageNewSection());
+      
       case '/calendar/newEvent':
         return MaterialPageRoute(builder: (_) => PageNewEvent());
 
@@ -39,14 +49,17 @@ class RouteGenerator {
       case '/toDo/newToDo':
         return MaterialPageRoute(builder: (_) => PageNewToDo());
 
+      case '/toDo/toDo':
+        return MaterialPageRoute(builder: (_) => PageToDo(args));
+
       case '/pageDisplayItem':
-        Map<String, dynamic> args2 = new Map<String, dynamic>.from(args);
+        Map<String, dynamic> aux = new Map<String, dynamic>.from(args);
         return MaterialPageRoute(
           builder: (_) => PageDisplayItem(
-            args2['child'],
-            heroTag: args2['heroTag'],
-            title: args2['title'],
-            actions: args2['actions'],
+            aux['child'],
+            heroTag: aux['heroTag'],
+            title: aux['title'],
+            actions: aux['actions'],
           ),
         );
 

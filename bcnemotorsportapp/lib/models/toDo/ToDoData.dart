@@ -22,14 +22,34 @@ class ToDoData {
   List<ToDo> get allToDos => _data;
   List<ToDo> get myToDos => _data.where((element) => element.personIds.contains(_dbId)).toList();
   List<ToDo> get sectionToDosExcMine => _data.where((element) => element.personIds.any((element) => element != _dbId)).toList();
+  ToDo toDoById(String id) {
+    return _data.firstWhere((element) => element.id == id, orElse: () => null);
+  }
 
   // METHODS
   bool existsToDo(String id) {
     return _data.any((element) => element.id == id);
   }
 
+  bool canIncrementUserCounter(String toDoId) {
+    for (ToDo toDo in _data) {
+      if (toDo.id == toDoId) {
+        if (!toDo.everCompleted) {
+          if (DateTime.now().difference(toDo.whenAdded).inDays >= 1) return true;
+          else return false;
+        }
+        else return false;
+      }
+    }
+    return false;
+  }
+
   void addToDo(ToDo newToDo) {
     if (!existsToDo(newToDo.id)) _data.add(newToDo);
+  }
+
+  void deleteToDo(String id) {
+    _data.removeWhere((element) => element.id == id);
   }
 
   void completeToDo(String id) {

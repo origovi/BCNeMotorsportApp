@@ -17,7 +17,7 @@ class SectionsData {
 
   SectionsData.fromRaw(Map<String, Map<String, dynamic>> data) {
     _data = {};
-    data.forEach((key, value) => _data[key] = Section.fromRaw(value));
+    data.forEach((key, value) => _data[key] = Section.fromRaw(value, id: key));
   }
 
   // GETTERS
@@ -28,4 +28,14 @@ class SectionsData {
   Section sectionById(String id) => _data[id];
 
   Section sectionByIndex(int index) => _data.values.elementAt(index);
+
+
+  // METHODS
+  void add(Section s) {
+    _data[s.sectionId] = s;
+  }
+
+  void remove(String id) {
+    _data.remove(id);
+  }
 }

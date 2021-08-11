@@ -1,10 +1,11 @@
 import 'package:bcnemotorsportapp/Constants.dart';
 import 'package:bcnemotorsportapp/models/popupMenu.dart';
 import 'package:bcnemotorsportapp/models/team/Person.dart';
+import 'package:bcnemotorsportapp/models/team/Section.dart';
 import 'package:bcnemotorsportapp/models/utilsAndErrors.dart';
 import 'package:bcnemotorsportapp/providers/CloudDataProvider.dart';
 import 'package:bcnemotorsportapp/providers/SignInPovider.dart';
-import 'package:bcnemotorsportapp/screens/ScreenMe.dart';
+import 'package:bcnemotorsportapp/screens/ScreenMember.dart';
 import 'package:bcnemotorsportapp/services/DatabaseService.dart';
 import 'package:bcnemotorsportapp/widgets/Buttons.dart';
 import 'package:bcnemotorsportapp/widgets/team/SectionGrid.dart';
@@ -28,7 +29,7 @@ class _ScreenTeamState extends State<ScreenTeam> {
     _textController = TextEditingController();
   }
 
-  void _editTeam({@required bool access}) {
+  void _editTeam() {
     final provider = Provider.of<CloudDataProvider>(context, listen: false);
     String selfDbId = provider.dbUId;
 
@@ -200,6 +201,173 @@ class _ScreenTeamState extends State<ScreenTeam> {
     );
   }
 
+  void _manageSections() {
+    final provider = Provider.of<CloudDataProvider>(context, listen: false);
+
+    List<Section> allSectionList = List<Section>.from(provider.allSections);
+    List<Section> addList = [];
+
+    _textController.clear();
+
+    Future<void> saveChanges() async {
+      Popup.loadingPopup(context);
+
+      final List<Section> originalList = provider.allSections;
+      List<Section> removeList = [];
+
+      originalList.forEach((element) {
+        if (!allSectionList.contains(element)) removeList.add(element);
+      });
+
+      await provider.updateSections(addList, removeList);
+
+      snackDatabaseUpdated(context);
+
+      setState(() {
+        Navigator.of(context).pop();
+      });
+    }
+
+    Popup.fancyPopup(
+      context: context,
+      barrierDismissible: false,
+      children: [
+        StatefulBuilder(builder: (contextBuilder, setStateBuilder) {
+          void newMember() {
+            Navigator.of(context).pushNamed("/team/newSection").then((value) {
+              if (value != null) {
+                setStateBuilder(() {
+                  addList.add(value);
+                });
+              }
+            });
+          }
+
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "  Team Sections:",
+                style: TextStyle(
+                  color: Colors.grey[600],
+                  fontWeight: FontWeight.bold,
+                  fontSize: 12,
+                ),
+              ),
+              Divider(thickness: 1.5),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 7),
+                height: 250,
+                child: ListView.separated(
+                  separatorBuilder: (context, personIndex) {
+                    return Divider(
+                      thickness: 1,
+                    );
+                  },
+                  itemCount: allSectionList.length + addList.length,
+                  itemBuilder: (context, sectionIndex) {
+                    if (sectionIndex < allSectionList.length) {
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(allSectionList[sectionIndex].name),
+                              Text(
+                                allSectionList[sectionIndex].numMembers.toString() + " members",
+                                style: TextStyle(
+                                  color: Colors.grey[600],
+                                  fontSize: 10,
+                                ),
+                              ),
+                            ],
+                          ),
+                          IconButton(
+                            tooltip: "Remove this section",
+                            iconSize: 20,
+                            icon: Icon(Icons.clear),
+                            onPressed: () {
+                              Popup.twoOptionsPopup(
+                                context,
+                                message:
+                                    "${allSectionList[sectionIndex].name} will BE DELETED. All data related to it WILL BE DELETED. Changes need to be saved after.",
+                                text1: "Bye bye",
+                                color1: Colors.red,
+                                onPressed1: () {
+                                  setStateBuilder(() => allSectionList.removeAt(sectionIndex));
+                                  Navigator.of(context).pop();
+                                },
+                              );
+                            },
+                          ),
+                        ],
+                      );
+                    } else {
+                      sectionIndex -= allSectionList.length;
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(addList[sectionIndex].name,
+                                  style: TextStyle(fontWeight: FontWeight.bold)),
+                              Text(
+                                addList[sectionIndex].numMembers.toString() + " members",
+                                style: TextStyle(
+                                  color: Colors.grey[600],
+                                  fontSize: 10,
+                                ),
+                              ),
+                            ],
+                          ),
+                          IconButton(
+                            tooltip: "Remove this section",
+                            iconSize: 15,
+                            icon: Icon(Icons.clear),
+                            onPressed: () {
+                              setStateBuilder(() => addList.removeAt(sectionIndex));
+                            },
+                          ),
+                        ],
+                      );
+                    }
+                  },
+                ),
+              ),
+              Divider(thickness: 1.5),
+              // TEXT INPUT
+              Center(child: FlatIconButton(onPressed: newMember)),
+              // BOTTOM BUTTONS
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  TextButton(
+                    onPressed: () async {
+                      Navigator.of(context).pop();
+                      await saveChanges();
+                    },
+                    child: Text(
+                      "Save",
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: Navigator.of(context).pop,
+                    child: Text(
+                      "Cancel",
+                      style: TextStyle(color: Colors.grey[800]),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          );
+        }),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -223,8 +391,8 @@ class _ScreenTeamState extends State<ScreenTeam> {
                     icon: Icon(Icons.edit),
                     onSelected: (value) async {
                       if (value == TeamScreenEdit.manageAccess)
-                        _editTeam(access: true);
-                      else if (value == TeamScreenEdit.manageSections) print("manage sections");
+                        _editTeam();
+                      else if (value == TeamScreenEdit.manageSections) _manageSections();
                     },
                     itemBuilder: (_) {
                       return TeamScreenEdit.choices
@@ -278,7 +446,7 @@ class _ScreenTeamState extends State<ScreenTeam> {
                 ),
               ],
             ),
-            ScreenMe(Provider.of<CloudDataProvider>(context, listen: false).user, setState),
+            ScreenMember(Provider.of<CloudDataProvider>(context, listen: false).user, setState, isMe: true),
           ],
         ),
       ),

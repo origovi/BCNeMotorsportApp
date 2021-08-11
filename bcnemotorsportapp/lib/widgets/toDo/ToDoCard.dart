@@ -39,12 +39,12 @@ class _ToDoCardState extends State<ToDoCard> {
       height: widget.height,
       width: widget.width,
       child: NiceBox(
-        progress: widget.toDo.deadlineProgress,
+        progress: widget.toDo.done ? 0.0 : widget.toDo.deadlineProgress,
         progressColor: widget.toDo.deadlineProgressColor,
-        onTap: () {},
+        onTap: () => Navigator.of(context).pushNamed('/toDo/toDo', arguments: widget.toDo),
         radius: 25,
         padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-        color: widget.toDo.color,
+        color: widget.toDo.done ? Colors.grey[300] : widget.toDo.color,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -52,28 +52,55 @@ class _ToDoCardState extends State<ToDoCard> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  formatDate(widget.toDo.whenAdded, short: true, yearWhenNecessary: true),
+                  formatDatePhrase(widget.toDo.whenAdded),
                   style: TextStyle(fontSize: 11),
                 ),
+                // DEADLINE DATE
                 Text(
                   widget.toDo.hasDeadline
-                      ? "Deadline is ${formatDate(widget.toDo.deadline, short: true, yearWhenNecessary: true)}"
+                      ? "Deadline ${formatDate(widget.toDo.deadline, short: true, yearWhenNecessary: true)}"
                       : "",
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 11),
                 ),
               ],
             ),
+            Row(
+              children: [
+                // COLOR WHEN DONE
+                if (widget.toDo.done)
+                  Padding(
+                    padding: const EdgeInsets.only(right: 5),
+                    child: Container(
+                      width: 20,
+                      height: 20,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5),
+                        color: widget.toDo.color,
+                      ),
+                    ),
+                  ),
+                // NAME
+                Expanded(
+                  child: Text(
+                    widget.toDo.name,
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      decoration: widget.toDo.done ? TextDecoration.lineThrough : null,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
+            // DESCRIPTION
             Text(
-              widget.toDo.name,
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              widget.toDo.hasDescription ? widget.toDo.description : "",
+              style: TextStyle(fontStyle: FontStyle.italic),
+              maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),
-              Text(
-                widget.toDo.hasDescription ? widget.toDo.description : "",
-                style: TextStyle(fontStyle: FontStyle.italic),
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-              ),
+            // PERSONS
             Text(
               personList.map((e) => e.completeName).join(", "),
               style: TextStyle(fontWeight: FontWeight.w500),

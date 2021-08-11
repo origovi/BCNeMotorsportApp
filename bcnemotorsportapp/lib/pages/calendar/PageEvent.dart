@@ -89,7 +89,7 @@ class PageEvent extends StatelessWidget {
                 Icon(Icons.calendar_today, size: 20),
                 SizedBox(width: 15),
                 Text(
-                    formatDates(event.from, event.to, event.allDay),
+                    formatEventDates(event.from, event.to, event.allDay),
                     style: TextStyle(fontSize: 16),
                 ),
               ],
@@ -100,7 +100,7 @@ class PageEvent extends StatelessWidget {
                 Icon(Icons.visibility, size: 20),
                 SizedBox(width: 15),
                 Text(
-                  event.global ? "Everyone" : Provider.of<CloudDataProvider>(context, listen: false).sectionById(event.sectionId).name ?? "Section not found",
+                  event.global ? "Everyone" : Provider.of<CloudDataProvider>(context, listen: false).sectionNameById(event.sectionId),
                   style: TextStyle(fontSize: 16),
                 ),
               ],

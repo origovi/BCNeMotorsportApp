@@ -32,6 +32,7 @@ class SectionToDo extends StatelessWidget {
       String personName = provider.personById(differentPerson).completeName;
       res.add(PersonToDo(personName, personToDos));
     });
+    res.sort((pt1, pt2)=> pt1.personName.compareTo(pt2.personName));
     return res;
   }
 

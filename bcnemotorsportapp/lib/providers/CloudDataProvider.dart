@@ -3,6 +3,7 @@ import 'package:bcnemotorsportapp/models/calendar/Announcement.dart';
 import 'package:bcnemotorsportapp/models/calendar/CalendarData.dart';
 import 'package:bcnemotorsportapp/models/calendar/Event.dart';
 import 'package:bcnemotorsportapp/models/team/Person.dart';
+import 'package:bcnemotorsportapp/models/team/PersonsData.dart';
 import 'package:bcnemotorsportapp/models/team/Section.dart';
 import 'package:bcnemotorsportapp/models/team/SectionsData.dart';
 import 'package:bcnemotorsportapp/models/toDo/ToDoData.dart';
@@ -36,6 +37,8 @@ class CloudDataProvider extends ChangeNotifier {
   SectionsData get sectionsData => _data.sectionsData;
   CalendarData get calendarData => _data.calendarData;
   ToDoData get toDoData => _data.toDoData;
+  PersonsData get personsData => _data.personsData;
+  
   String get dbUId => _dbUId;
   bool get isTeamLeader => personById(_dbUId).isTeamLeader;
   bool get isChief => personById(_dbUId).chiefSectionIds.isNotEmpty;
@@ -49,8 +52,24 @@ class CloudDataProvider extends ChangeNotifier {
     return _data.personById(id);
   }
 
+  String personNameById(String id) {
+    Person person = _data.personsData.personById(id);
+    if (person == null)
+      return "Person not found";
+    else
+      return person.completeName;
+  }
+
   Section sectionById(String id) {
     return _data.sectionsData.sectionById(id);
+  }
+
+  String sectionNameById(String id) {
+    Section section = _data.sectionsData.sectionById(id);
+    if (section == null)
+      return "Section not found";
+    else
+      return section.name;
   }
 
   List<Person> get personList => _data.personsData.dataList;
@@ -194,9 +213,26 @@ class CloudDataProvider extends ChangeNotifier {
     }
   }
 
+  Future<void> updateSections(List<Section> addList, List<Section> removeList) async {
+    List<String> addListId = await DatabaseService.updateSections(addList.map((e) => e.toRaw()).toList(), removeList.map((e) => Pair(e.sectionId, e.memberIds)).toList());
+    for (var i = 0; i < addList.length; i++) {
+      addList[i].addId(addListId[i]);
+      sectionsData.add(addList[i]);
+    }
+
+    removeList.forEach((element) => sectionsData.remove(element.sectionId));
+  }
+
   Future<void> completeToDo(String id) async {
+    if (toDoData.canIncrementUserCounter(id)) {
+      user.incrementToDosCompleted();
+      for (String pId in toDoData.toDoById(id).personIds) {
+        Person person = personById(pId);
+        if (person != null) await DatabaseService.updateToDosCompleted(pId, person.toDosCompleted+1);
+      }
+    }
     toDoData.completeToDo(id);
-    await DatabaseService.updateToDo(id, {'done': true});
+    await DatabaseService.updateToDo(id, {'done': true, 'everCompleted': true});
   }
 
   Future<void> incompleteToDo(String id) async {
@@ -237,9 +273,16 @@ class CloudDataProvider extends ChangeNotifier {
     await DatabaseService.deleteAnnouncement(announcementId);
   }
 
+  Future<void> deleteToDo(String toDoId) async {
+    _data.toDoData.deleteToDo(toDoId);
+    await DatabaseService.deleteToDo(toDoId);
+  }
+
   // OTHERS
   List<Person> personsThatCoincideCompleteName(String text, {@required List<Person> exclude}) =>
       _data.personsThatCoincideCompleteName(text, exclude: exclude);
 
   bool existsPersonWithEmail(String email) => _data.personsData.existsPersonWithEmail(email);
+  
+  bool existsSectionWithName(String name) => allSections.any((element) => element.name == name);
 }

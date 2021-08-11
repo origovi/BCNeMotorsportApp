@@ -146,6 +146,7 @@ class _MemberTileState extends State<MemberTile> {
     return Padding(
       padding: const EdgeInsets.only(top: 10),
       child: NiceBox(
+        onTap: ()=>Navigator.of(context).pushNamed('/team/member', arguments: {'person': widget._p, 'setStateParent': setState}),
         onTapDown: (details) => _tapPosition = details.globalPosition,
         onLongPress: () => _showMenu(context),
         child: Row(

@@ -15,7 +15,7 @@ class PersonToDo extends StatelessWidget {
       children: [
         Padding(
           padding: const EdgeInsets.only(left: Sizes.sideMargin * 2),
-          child: Text(personName),
+          child: Text(personName, style: TextStyle(fontWeight: FontWeight.w600),),
         ),
         SizedBox(
           height: 150,

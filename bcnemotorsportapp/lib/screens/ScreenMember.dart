@@ -12,17 +12,18 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
-class ScreenMe extends StatefulWidget {
-  final Person _me;
+class ScreenMember extends StatefulWidget {
+  final Person person;
   final void Function(void Function()) _setStateParent;
+  final bool isMe;
 
-  ScreenMe(this._me, this._setStateParent);
+  ScreenMember(this.person, this._setStateParent, {@required this.isMe});
 
   @override
-  _ScreenMeState createState() => _ScreenMeState();
+  _ScreenMemberState createState() => _ScreenMemberState();
 }
 
-class _ScreenMeState extends State<ScreenMe> {
+class _ScreenMemberState extends State<ScreenMember> {
   List<String> _chiefSectionsId;
   List<String> _onlyMemberSectionsId;
 
@@ -36,13 +37,13 @@ class _ScreenMeState extends State<ScreenMe> {
   void initState() {
     super.initState();
 
-    _chiefSectionsId = widget._me.chiefSectionIds;
-    _onlyMemberSectionsId = widget._me.onlyMemberSectionIds;
+    _chiefSectionsId = widget.person.chiefSectionIds;
+    _onlyMemberSectionsId = widget.person.onlyMemberSectionIds;
 
-    _hasAbout = widget._me.hasAbout;
+    _hasAbout = widget.person.hasAbout;
     _aboutCanSaveAgain = true;
     if (_hasAbout)
-      _noteController = TextEditingController.fromValue(TextEditingValue(text: widget._me.about));
+      _noteController = TextEditingController.fromValue(TextEditingValue(text: widget.person.about));
     else
       _noteController = TextEditingController();
     _aboutFocus = FocusNode();
@@ -51,8 +52,8 @@ class _ScreenMeState extends State<ScreenMe> {
   Future<void> _saveAbout() async {
     final provider = Provider.of<CloudDataProvider>(context, listen: false);
     await Future.delayed(Duration(seconds: 3));
-    widget._me.about = _newTempAbout;
-    await provider.updatePersonAbout(widget._me.dbId, _newTempAbout);
+    widget.person.about = _newTempAbout;
+    await provider.updatePersonAbout(widget.person.dbId, _newTempAbout);
     //snackDatabaseUpdated(context);
     _aboutCanSaveAgain = true;
   }
@@ -60,7 +61,7 @@ class _ScreenMeState extends State<ScreenMe> {
   Future<void> _updateProfileImage(BuildContext context) async {
     PickedFile image = await pickGalleryImage();
     if (image != null) {
-      await StorageService.uploadProfileImage(image, widget._me.profilePhotoName);
+      await StorageService.uploadProfileImage(image, widget.person.profilePhotoName);
       snackDatabaseUpdated(context);
       widget._setStateParent(() {});
       Navigator.of(context).pop();
@@ -81,10 +82,10 @@ class _ScreenMeState extends State<ScreenMe> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 ShowImage(
-                  widget._me.profilePhotoName,
+                  widget.person.profilePhotoName,
                   size: 80,
                   displayable: true,
-                  displayTitle: widget._me.completeName,
+                  displayTitle: widget.person.completeName,
                   displayActions: <Widget>[
                     IconButton(
                         icon: Icon(Icons.edit), onPressed: () => _updateProfileImage(context)),
@@ -92,18 +93,18 @@ class _ScreenMeState extends State<ScreenMe> {
                 ),
                 SizedBox(height: 10),
                 Text(
-                  widget._me.completeName,
+                  widget.person.completeName,
                   style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
                 ),
                 SizedBox(height: 5),
                 Text(
-                  widget._me.email,
+                  widget.person.email,
                   style: TextStyle(color: Colors.grey[600]),
                 ),
                 SizedBox(height: 10),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [Stat('ToDos Completed', widget._me.toDosCompleted)],
+                  children: [Stat('ToDos Completed', widget.person.toDosCompleted)],
                 ),
                 SizedBox(height: 10),
                 Visibility(
@@ -111,6 +112,7 @@ class _ScreenMeState extends State<ScreenMe> {
                   child: Material(
                     borderRadius: BorderRadius.circular(5),
                     child: TextField(
+                      readOnly: !widget.isMe,
                       maxLines: 2,
                       controller: _noteController,
                       focusNode: _aboutFocus,
@@ -136,15 +138,18 @@ class _ScreenMeState extends State<ScreenMe> {
                       ),
                     ),
                   ),
-                  replacement: Center(
-                    child: FlatIconButton(
-                      text: "Add About",
-                      onPressed: () {
-                        setState(() {
-                          _aboutFocus.requestFocus();
-                          _hasAbout = true;
-                        });
-                      },
+                  replacement: Visibility(
+                    visible: widget.isMe,
+                    child: Center(
+                      child: FlatIconButton(
+                        text: "Add About",
+                        onPressed: () {
+                          setState(() {
+                            _aboutFocus.requestFocus();
+                            _hasAbout = true;
+                          });
+                        },
+                      ),
                     ),
                   ),
                 ),

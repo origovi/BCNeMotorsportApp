@@ -12,10 +12,10 @@ class ToDo {
   ];
 
   static List<Color> _deadlineProgressColorList = [
-    Colors.red[_intensity+200],
-    Colors.orange[_intensity+200],
-    Colors.yellow[_intensity+200],
-    Colors.green[_intensity+200],
+    Colors.red[_intensity + 200],
+    Colors.orange[_intensity + 200],
+    Colors.yellow[_intensity + 200],
+    Colors.green[_intensity + 200],
   ];
 
   static const List<String> importanceNames = [
@@ -29,6 +29,7 @@ class ToDo {
   String _id;
   String _name;
   bool _done;
+  bool _everCompleted;
   bool _hasDescription;
   String _description;
   List<String> _personIds;
@@ -51,9 +52,11 @@ class ToDo {
     DateTime whenAdded,
     bool hasDeadline = false,
     DateTime deadline,
+    bool everCompleted = false,
   })  : _id = id,
         _name = name,
         _done = done,
+        _everCompleted = everCompleted,
         _hasDescription = description != null && description.isNotEmpty,
         _description = description,
         _personIds = personIds ?? [],
@@ -66,6 +69,7 @@ class ToDo {
     _id = id;
     _name = data['name'];
     _done = data['done'] ?? false;
+    _everCompleted = data['everCompleted'] ?? false;
     _hasDescription = data['hasDescription'] ?? false;
     if (_hasDescription) _description = data['description'];
     _personIds = List<String>.from(data['personIds']);
@@ -79,10 +83,12 @@ class ToDo {
   String get id => _id;
   String get name => _name;
   bool get done => _done;
+  bool get everCompleted => _everCompleted;
   bool get hasDescription => _hasDescription;
   String get description => _description;
   List<String> get personIds => _personIds;
   int get importanceLevel => _importanceLevel;
+  String get importanceName => importanceNames[_importanceLevel];
   DateTime get whenAdded => _whenAdded;
   bool get hasDeadline => _hasDeadline;
   DateTime get deadline => _deadline;
@@ -101,16 +107,29 @@ class ToDo {
     }
   }
 
+  int get daysUntilDeadline {
+    DateTime now = DateTime.now();
+    if (!_hasDeadline || now.isAfter(_deadline))
+      return 0;
+    else
+      return _deadline.difference(now).inDays;
+  }
+
   // METHODS
   void addId(String newToDoId) => _id = newToDoId;
 
-  void complete() => _done = true;
+  void complete() {
+    _done = true;
+    _everCompleted = true;
+  }
+
   void incomplete() => _done = false;
 
   Map<String, dynamic> toRaw() {
     Map<String, dynamic> res = {};
     res['name'] = _name;
     res['done'] = _done;
+    res['everCompleted'] = _everCompleted;
     res['hasDescription'] = _hasDescription;
     if (_hasDescription) res['description'] = _description;
     res['personIds'] = _personIds;

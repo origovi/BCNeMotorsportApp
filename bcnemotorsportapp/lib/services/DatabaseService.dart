@@ -108,8 +108,37 @@ class DatabaseService {
     return newDbIds;
   }
 
+  static Future<List<String>> updateSections(List<Map<String, dynamic>> addList, List<Pair<String, List<String>>> removeList) async {
+    List<String> newDbIds = [];
+    // Add new sections
+    for (var newSectionData in addList) {
+      newDbIds.add((await FirebaseFirestore.instance.collection('sections').add(newSectionData)).id);
+    }
+    
+    // Remove sections
+    for (Pair<String, List<String>> sectionToBeRemoved in removeList) {
+      for (String sectionMember in sectionToBeRemoved.second) {
+        Map<String, dynamic> memberSections = (await FirebaseFirestore.instance.collection('users').doc(sectionMember).get()).data()['sections'];
+        memberSections.remove(sectionToBeRemoved.first);
+        await FirebaseFirestore.instance.collection('users').doc(sectionMember).update({'sections': memberSections});
+
+      }
+      
+      await FirebaseFirestore.instance.collection('sections').doc(sectionToBeRemoved.first).delete();
+
+      // maybe more data to be deleted
+      // TODO
+    }
+    return newDbIds;
+
+  }
+
   static Future<void> updateToDo(String id, Map<String, dynamic> dataToUpdate) async {
     await FirebaseFirestore.instance.collection('todos').doc(id).update(dataToUpdate);
+  }
+
+  static Future<void> updateToDosCompleted(String dbId, int numToDosCompleted) async {
+    await FirebaseFirestore.instance.collection('users').doc(dbId).update({'toDosCompleted': numToDosCompleted});
   }
 
 
@@ -135,5 +164,9 @@ class DatabaseService {
 
   static Future<void> deleteAnnouncement(String announcementId) async {
     await FirebaseFirestore.instance.collection('announcements').doc(announcementId).delete();
+  }
+
+  static Future<void> deleteToDo(String toDoId) async {
+    await FirebaseFirestore.instance.collection('todos').doc(toDoId).delete();
   }
 }

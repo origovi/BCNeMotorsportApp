@@ -32,7 +32,7 @@ class _PageHomeState extends State<PageHome> {
   @override
   Widget build(BuildContext context) {
     changeSystemUi(navBarColor: Colors.grey[50], navBarBrightness: Brightness.dark);
-    List<Widget> sections = [ScreenCalendar(), ScreenToDo(), ScreenTesting(), ScreenTeam()];
+    List<Widget> sections = [ScreenCalendar(), ScreenToDo(), /*ScreenTesting(), */ScreenTeam()];
     //final user = Provider.of<User>(context);
     // if (user != null && user.emailVerified)
     //   Provider.of<DebtsStatus>(context, listen: false).signIn(user);
@@ -53,20 +53,21 @@ class _PageHomeState extends State<PageHome> {
         items: [
           BottomNavigationBarItem(
             label: "Next events",
-            icon: Icon(Icons.calendar_today),
+            icon: Icon(Icons.calendar_today_outlined),
+            activeIcon: Icon(Icons.calendar_today),
           ),
           BottomNavigationBarItem(
             label: "To Do",
             icon: Icon(Icons.task_alt), // task_alt, check_box, checklist_rtl
           ),
-          BottomNavigationBarItem(
-            label: "Testing",
-            icon: Icon(Icons.rv_hookup), // directions_car, rv_hookup, sports_motorsports
-          ),
+          // BottomNavigationBarItem(
+          //   label: "Testing",
+          //   icon: Icon(Icons.rv_hookup), // directions_car, rv_hookup, sports_motorsports
+          // ),
           BottomNavigationBarItem(
             label: "Team",
-            icon: Icon(Icons.supervisor_account_outlined),
-            activeIcon: Icon(Icons.supervisor_account),
+            icon: Icon(Icons.groups_outlined),
+            activeIcon: Icon(Icons.groups),
           )
         ],
       ),

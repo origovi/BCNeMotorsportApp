@@ -18,11 +18,13 @@ class ScreenToDo extends StatefulWidget {
 class _ScreenToDoState extends State<ScreenToDo> with SingleTickerProviderStateMixin {
   TabController _tabController;
   int tabIndex;
+  bool showCompletedToDos;
   String sortState;
   @override
   void initState() {
     super.initState();
     tabIndex = 0;
+    showCompletedToDos = false;
     _tabController = TabController(initialIndex: 0, length: 2, vsync: this);
     _tabController.addListener(() {
       if (_tabController.index != tabIndex) {
@@ -122,6 +124,11 @@ class _ScreenToDoState extends State<ScreenToDo> with SingleTickerProviderStateM
     final provider = Provider.of<CloudDataProvider>(context, listen: false);
     List<ToDo> myToDosSorted = _sortToDos(provider.toDoData.myToDos);
     List<ToDo> sectionToDosExcMineSorted = _sortToDos(provider.toDoData.sectionToDosExcMine);
+
+    // filters the completed toDos or the incompleted
+    myToDosSorted.removeWhere((element) => showCompletedToDos != element.done);
+    sectionToDosExcMineSorted.removeWhere((element) => showCompletedToDos != element.done);
+
     return Scaffold(
       floatingActionButton: FloatingActionButton(
           child: Icon(Icons.add_task),
@@ -139,6 +146,16 @@ class _ScreenToDoState extends State<ScreenToDo> with SingleTickerProviderStateM
               snap: true,
               forceElevated: innerBoxScrolled,
               actions: [
+                IconButton(
+                  tooltip: (showCompletedToDos ? "Hide" : "Show") + " completed ToDos",
+                  onPressed: () {
+                    setState(() {
+                      showCompletedToDos = !showCompletedToDos;
+                    });
+                  },
+                  icon: Icon(Icons.task),
+                  color: showCompletedToDos ? Colors.blueAccent : Colors.white,
+                ),
                 PopupMenuButton<String>(
                   tooltip: "Sort by",
                   icon: Icon(Icons.sort),
