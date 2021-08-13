@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:bcnemotorsportapp/Constants.dart';
 import 'package:bcnemotorsportapp/providers/CloudDataProvider.dart';
 import 'package:bcnemotorsportapp/providers/SignInPovider.dart';
@@ -38,8 +40,10 @@ class _MyAppState extends State<MyApp> {
       DeviceOrientation.portraitDown,
     ]);
 
-    // needed to run app at highest framerate possible
-    FlutterDisplayMode.setHighRefreshRate();
+    if (Platform.isAndroid) {
+      // needed to run app at highest framerate possible (ANDROID)
+      FlutterDisplayMode.setHighRefreshRate();
+    }
   }
 
   @override
