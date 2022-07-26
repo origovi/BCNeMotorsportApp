@@ -37,7 +37,7 @@ A ToDo represents a thing that a person will do.
 There are two ToDo's feed-views, one for the ToDo(s) that belong to you and another that displays what every member from your section is doing.
 
 <p align="center">
-  <img src="./assets/readme/ToDos.jpg" alt="ToDo(s) screen" /><br />
+  <img src="./assets/readme/ToDos.jpg" alt="ToDo(s) screen" width="300"/><br />
   ToDo(s) feed-view
 </p>
 
@@ -49,9 +49,13 @@ The app includes an event manager, functionalities are:
 - Different colors to differenciate event types.
 
 <p align="center">
-  <img src="./assets/readme/calendar.jpg" alt="Calendar screen" /><br />
+  <img src="./assets/readme/calendar.jpg" alt="Calendar screen" width="300"/><br />
   Calendar screen
 </p>
+
+### Announcements
+An announcement is something that all members need to see and that is stored in a foldable panel with "Latest News" written.
+This panel is designed as a stack, so the latest announcement will be more visible.
 
 ### Profile
 Each member will have a profile (accessible via the team tab), this profile will show to anyone:
@@ -63,7 +67,7 @@ Each member will have a profile (accessible via the team tab), this profile will
 - The sections he/she is member/chief of
 
 <p align="center">
-  <img src="./assets/readme/profile.jpg" alt="Profile screen" /><br />
+  <img src="./assets/readme/profile.jpg" alt="Profile screen" width="300" /><br />
   Profile screen
 </p>
 
