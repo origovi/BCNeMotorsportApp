@@ -5,6 +5,7 @@ The main objective of this app is to help manage the team's events and ToDo(s).
 ## Team hierarchy
 Internally, the team is divided into sections, each section has a chief and there are X number of teamleaders, which take directive decisions.
 This structure must be respected in the application, depending on the role each person has in the team, different permissions will be granted.
+All the following features can be executed in-app.
 
 - **Member:**
   - Create / modify ToDo(s)
@@ -35,12 +36,36 @@ A ToDo represents a thing that a person will do.
 
 There are two ToDo's feed-views, one for the ToDo(s) that belong to you and another that displays what every member from your section is doing.
 
+<p align="center">
+  <img src="./assets/readme/ToDos.jpg" alt="ToDo(s) screen" /><br />
+  ToDo(s) feed-view
+</p>
+
 ### Calendar
 The app includes an event manager, functionalities are:
 - An event will have a start date and an end date (with possibility to be an all-day event).
 - An event will have a visibility level, it can be seen be everyone or by members of your section only.
 - A notification can be sent to everyone who can see the event at creation.
 - Different colors to differenciate event types.
+
+<p align="center">
+  <img src="./assets/readme/calendar.jpg" alt="Calendar screen" /><br />
+  Calendar screen
+</p>
+
+### Profile
+Each member will have a profile (accessible via the team tab), this profile will show to anyone:
+- Name
+- Email
+- Profile picture (changeable by the user)
+- Number of ToDo(s) completed
+- A description
+- The sections he/she is member/chief of
+
+<p align="center">
+  <img src="./assets/readme/profile.jpg" alt="Profile screen" /><br />
+  Profile screen
+</p>
 
 ## Backend
 Firebase Firestore is used to store **all** information that the app needs to work (no data is stored in-device).
