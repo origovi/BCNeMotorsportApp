@@ -92,7 +92,41 @@ class ShowImage extends StatelessWidget {
             fit: BoxFit.cover,
           );
         else
-          return imagePlaceholder;
+          return GestureDetector(
+            onTap: displayable
+                ? () => Navigator.of(context).pushNamed(
+                      '/pageDisplayItem',
+                      arguments: {
+                        'child': Column(
+                          children: [
+                            Expanded(
+                              child: InteractiveViewer(
+                                minScale: 1,
+                                maxScale: 1,
+                                child: Image.asset("assets/profile_pic_placeholder.png"),
+                              ),
+                            ),
+                          ],
+                        ),
+                        'heroTag': 'profile_' + imageName,
+                        'title': displayTitle,
+                        'actions': displayActions,
+                      },
+                    )
+                : onTap,
+            child: Hero(
+              tag: 'profile_' + imageName,
+              child: Container(
+                height: size,
+                width: size,
+                decoration: BoxDecoration(
+                  shape: this.circular ? BoxShape.circle : null,
+                  image: DecorationImage(
+                      image: AssetImage("assets/profile_pic_placeholder.png"), fit: BoxFit.cover),
+                ),
+              ),
+            ),
+          );
       },
     );
   }

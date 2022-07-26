@@ -7,7 +7,6 @@ import 'package:bcnemotorsportapp/routeGenerator.dart';
 import 'package:bcnemotorsportapp/services/MessagingService.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_displaymode/flutter_displaymode.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';

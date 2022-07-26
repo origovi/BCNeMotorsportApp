@@ -6,7 +6,6 @@ import 'package:bcnemotorsportapp/screens/ScreenTeam.dart';
 import 'package:bcnemotorsportapp/screens/ScreenToDo.dart';
 import 'package:bcnemotorsportapp/screens/ScreenTesting.dart';
 import 'package:bcnemotorsportapp/services/MessagingService.dart';
-import 'package:bcnemotorsportapp/services/OneSignalService.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

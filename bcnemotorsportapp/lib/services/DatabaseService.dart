@@ -58,8 +58,8 @@ class DatabaseService {
 
   // ########## UPDATES ##########
 
-  static Future<void> updateUserFcmToken(String dbId, String newToken) async {
-    await FirebaseFirestore.instance.collection('users').doc(dbId).update({'fcmToken': newToken});
+  static Future<void> updateUserFcmTokens(String dbId, List<String> newTokens) async {
+    await FirebaseFirestore.instance.collection('users').doc(dbId).update({'fcmTokens': newTokens});
   }
 
   static Future<void> updateSectionAbout(String sectionId, String newAbout) async {

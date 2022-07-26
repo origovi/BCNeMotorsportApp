@@ -70,7 +70,9 @@ class _PageNewToDoState extends State<PageNewToDo> {
         description: descriptionController.text.trim(),
         importanceLevel: importanceIndex,
       );
-      Navigator.of(context).pop([newToDo, notifyUsers, personList.map((e) => e.fcmToken).toList()]);
+      List<String> allFcmTokens = [];
+      personList.forEach((element) => allFcmTokens.addAll(element.fcmTokens));
+      Navigator.of(context).pop([newToDo, notifyUsers, allFcmTokens]);
     } else {
       setState(() {
         autovalidateMode = AutovalidateMode.always;

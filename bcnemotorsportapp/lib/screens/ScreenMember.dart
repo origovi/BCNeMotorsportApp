@@ -87,7 +87,7 @@ class _ScreenMemberState extends State<ScreenMember> {
                   displayable: true,
                   displayTitle: widget.person.completeName,
                   displayActions: <Widget>[
-                    IconButton(
+                    if (widget.isMe) IconButton(
                         icon: Icon(Icons.edit), onPressed: () => _updateProfileImage(context)),
                   ],
                 ),

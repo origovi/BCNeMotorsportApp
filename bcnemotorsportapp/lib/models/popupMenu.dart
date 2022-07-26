@@ -1,8 +1,9 @@
 class TeamScreenPopupMenu {
   static const String config = "Config";
+  static const String controller = "Controller";
   static const String logout = "Logout";
 
-  static const List<String> choices = [config, logout];
+  static const List<String> choices = [config, controller, logout];
 }
 
 class TeamScreenMemberTilePopupMenu {

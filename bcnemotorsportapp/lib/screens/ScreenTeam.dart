@@ -408,6 +408,8 @@ class _ScreenTeamState extends State<ScreenTeam> {
                   onSelected: (value) async {
                     if (value == TeamScreenPopupMenu.config)
                       print("obrir finestra de config.");
+                    else if (value == TeamScreenPopupMenu.controller)
+                      Navigator.of(context).pushNamed('/xalocController');
                     else if (value == TeamScreenPopupMenu.logout)
                       await Provider.of<SignInProvider>(context, listen: false).logout();
                   },

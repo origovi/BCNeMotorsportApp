@@ -39,9 +39,7 @@ dependencies:
   google_sign_in: ^5.0.2
   http: ^0.13.3
   image_picker: ^0.7.4
-  onesignal_flutter: ^3.0.0
   provider: ^5.0.0
-  sliver_tools: ^0.2.1
   syncfusion_flutter_calendar: ^19.1.64
   url_launcher: ^6.0.3
 

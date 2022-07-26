@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class Person {
   String _dbId;
-  String _fcmToken; // can be null
+  List<String> _fcmTokens; // can be null
   String _name;
   String _surnames;
   bool _teamLeader;
@@ -17,7 +17,7 @@ class Person {
   // CONSTRUCTORS
   Person(
       {String dbId,
-      String fcmToken,
+      List<String> fcmTokens,
       @required String name,
       @required String surnames,
       Map<String, Map<String, dynamic>> sections = const {},
@@ -27,7 +27,7 @@ class Person {
       @required String email,
       @required bool teamLeader}) {
     _dbId = dbId;
-    _fcmToken = fcmToken;
+    _fcmTokens = fcmTokens;
     _name = name;
     _surnames = surnames;
     _teamLeader = teamLeader;
@@ -40,7 +40,7 @@ class Person {
 
   Person.fromRaw(Map<String, dynamic> data) {
     _dbId = data['dbId'];
-    _fcmToken = data['fcmToken'];
+    _fcmTokens = List<String>.from(data['fcmTokens'] ?? []);
     _name = data['name'];
     _surnames = data['surname'];
     _teamLeader = data['teamLeader'];
@@ -54,7 +54,7 @@ class Person {
   // GETTERS
   String get dbId => _dbId;
   /// Can be null
-  String get fcmToken => _fcmToken;
+  List<String> get fcmTokens => _fcmTokens;
   String get profilePhotoName => _dbId + '.jpg';
   String get name => _name;
   String get surname => _surnames;
@@ -99,15 +99,16 @@ class Person {
   }
 
   void setDbId(String newDbId) => _dbId = newDbId;
-  void setFcmToken(String newFcmToken) => _fcmToken = newFcmToken;
 
   // METHODS
+  void addFcmToken(String newFcmToken) => _fcmTokens.add(newFcmToken);
+  
   void incrementToDosCompleted() => _toDosCompleted++;
 
   Map<String, dynamic> toRaw() {
     Map<String, dynamic> res = {};
     res['dbId'] = _dbId;
-    res['fcmToken'] = _fcmToken;
+    res['fcmTokens'] = _fcmTokens;
     res['name'] = _name;
     res['surname'] = _surnames;
     res['teamLeader'] = _teamLeader;

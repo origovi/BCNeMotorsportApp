@@ -3,7 +3,7 @@ import 'package:image_picker/image_picker.dart';
 
 class StorageService {
   static Future<String> getImageUrl(String imageName) async {
-    /*TEMP*/ return null;
+    // /*TEMP*/ return null;
     if (imageName==null) return null;
     try {
       return await FirebaseStorage.instance.ref('profile').child(imageName).getDownloadURL();

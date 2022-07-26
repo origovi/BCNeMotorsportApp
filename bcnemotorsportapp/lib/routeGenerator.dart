@@ -1,5 +1,6 @@
 import 'package:bcnemotorsportapp/pages/PageDisplayItem.dart';
 import 'package:bcnemotorsportapp/pages/PageError.dart';
+import 'package:bcnemotorsportapp/pages/PageXalocController.dart';
 import 'package:bcnemotorsportapp/pages/calendar/PageEvent.dart';
 import 'package:bcnemotorsportapp/pages/calendar/PageNewAnnouncement.dart';
 import 'package:bcnemotorsportapp/pages/calendar/PageNewEvent.dart';
@@ -36,7 +37,10 @@ class RouteGenerator {
   
       case '/team/newSection':
         return MaterialPageRoute(builder: (_) => PageNewSection());
-      
+
+      case '/xalocController':
+        return MaterialPageRoute(builder: (_) => PageXalocController());
+
       case '/calendar/newEvent':
         return MaterialPageRoute(builder: (_) => PageNewEvent());
 

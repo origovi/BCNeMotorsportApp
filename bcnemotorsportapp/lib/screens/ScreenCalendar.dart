@@ -124,7 +124,7 @@ class _ScreenCalendarState extends State<ScreenCalendar> {
             Visibility(
               visible: cloudDataProvider.isTeamLeader || cloudDataProvider.isChief,
               child: PopupMenuButton<String>(
-                tooltip: "Visibility",
+                tooltip: "New",
                 icon: Icon(Icons.add),
                 onSelected: (value) {
                   switch (value) {
@@ -132,7 +132,6 @@ class _ScreenCalendarState extends State<ScreenCalendar> {
                       newEvent(context);
                       break;
                     case NewCalendar.newAnnouncement:
-                      //MessagingService.postNotification(context, 'hola', 'que tal', 'global');
                       newAnnouncement(context);
                       break;
                     default:

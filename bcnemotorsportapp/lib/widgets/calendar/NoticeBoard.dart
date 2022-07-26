@@ -101,7 +101,7 @@ class _NoticeBoardState extends State<NoticeBoard> {
                     padding: const EdgeInsets.only(bottom: 20),
                     child: NiceBox(
                       onTapDown: (details) => _tapPosition = details.globalPosition,
-                      onLongPress: () => _showMenu(context, anno.id),
+                      onLongPress: (Provider.of<CloudDataProvider>(context, listen: false).isTeamLeader) ? () => _showMenu(context, anno.id) : null,
                       padding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,

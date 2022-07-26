@@ -18,7 +18,7 @@ import 'package:provider/provider.dart';
 // ########################
 
 class DecisorScreen extends StatelessWidget {
-  static const String app_version = "0.1";
+  static const String app_version = "0.2";
 
   static final ScreenLogin screenLoginLoading = ScreenLogin(loading: true);
 
@@ -33,7 +33,7 @@ class DecisorScreen extends StatelessWidget {
           // the internet connection status has changed
           else if (connectionSnapshot.hasData) {
             // if you have internet connection
-            if (connectionSnapshot.data == DataConnectionStatus.connected)
+            if (connectionSnapshot.data == DataConnectionStatus.connected || true)
               return StreamBuilder<QuerySnapshot>(
                   stream: DatabaseService.versionStream(),
                   builder: (context, AsyncSnapshot<QuerySnapshot> versionSnapshot) {

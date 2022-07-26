@@ -40,7 +40,7 @@ class CloudDataProvider extends ChangeNotifier {
   PersonsData get personsData => _data.personsData;
   
   String get dbUId => _dbUId;
-  bool get isTeamLeader => personById(_dbUId).isTeamLeader;
+  bool get isTeamLeader => user.isTeamLeader;
   bool get isChief => personById(_dbUId).chiefSectionIds.isNotEmpty;
 
   // pulls new data from database
@@ -85,9 +85,9 @@ class CloudDataProvider extends ChangeNotifier {
   // UPDATES
   Future<bool> updateUserFcmToken() async {
     String actualFcmToken = await MessagingService.getToken();
-    if (user.fcmToken == null || user.fcmToken != actualFcmToken) {
-      user.setFcmToken(actualFcmToken);
-      await DatabaseService.updateUserFcmToken(_dbUId, actualFcmToken);
+    if (!user.fcmTokens.contains(actualFcmToken)) {
+      user.addFcmToken(actualFcmToken);
+      await DatabaseService.updateUserFcmTokens(_dbUId, user.fcmTokens);
       return true;
     }
     return false;
